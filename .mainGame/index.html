@@ -4,7 +4,7 @@
   <title>13COMP assessment</title>
   <meta charset="UTF-8">
   <meta name="description" content="13COMP assessment">
-  <meta name="author" content="Ezra">
+  <meta name="author" content="?????">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/x-icon" href="/assets/images/dtec_favicon.PNG">
   
@@ -33,41 +33,51 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   
   <!-- Your modules ******************************************-->
-  <script defer src="../style.css"></script>
-  <script defer src="../modules/fb_io.js"></script>
-  <script defer src="../modules/ad_manager.js"></script>
-  <script defer src="../src/html_manager.js"></script>
+  <script defer src="data.js"></script>
+  <script defer src="src/html_manager.js"></script>
+  <script defer src="modules/ad_manager.js"></script>
+  <script defer src="reg_manager.js"></script>
+  <script defer src="modules/fb_io.js"></script>
+  <script defer src="game_manager.js"></script>
 
 </head>
-    <!--***************************************************
-    //  gamePage
-    ****************************************************-->
-    <div class="w3-container">
-        <h1 class="w3-wide">guess the number</h1>
-        <div class="w3-container w3-third" id="game_oneThird">
-    <h1 id="hellouser" style="text-align: center;">Hello Tommy</h1>
-    <div class="w3-container w3-third">
 
-        <!--game details for popBall-->
-        <div class="w3-container" id="game_textDiv">
-        <p id="hitscore">Average Hit Score: 0</p>
-        <p id="highavgscore">Highest AHS: 0</p>
-        <p id="highscore">Fastest Time: 0</p>
-        <p id="misses">Misses: 0</p>
-        <p id="username">Username: Tommy1</p>
-        <div class="w3-container" id="game_timeDiv">
-            <p id=gameTimer>Time: 0s</p>
+<!--***************************************************
+//  BODY
+****************************************************-->
+<body>
+  <h1 id="loadingText">LOADING...</h1>
+  <!--***************************************************
+  //  landingPage
+  ****************************************************-->
+  <section id="landingPage">
+	  <div class="w3-container">
+      <div class="w3-row">
+        <div class="w3-container w3-grey w3-col m10">
+          <h1 class="w3-wide">Welcome to Big Ezra's games!</h1>
         </div>
+		  <!-- admin button -->
+        <div class="w3-container w3-grey w3-col m2">
+          <button id="lP_Admin" style="background-color: grey; width: 100%;"
+                  class="w3-button w3-border w3-margin" 
+                  href="pages/adminPage.html">ADMIN
+          </button>
+        </div>
+      </div>
+		  <h1 class="w3-wide" id="helloHeader">hello</h1>
+		  <div class="w3-container w3-third" id="lP_oneThird">
 
-        <button class="w3-button w3-border w3-xlarge" onclick="game_gameStart()" id="game_startButton">START</button>
-        <button class="w3-button w3-border w3-xlarge" onclick="HTML_returnPage()" id="game_loginButton">RETURN</button>
-        </div>
-    </div>
-        </div>
-        <div class="w3-container w3-twothird" id="game_twoThird">
-
-    <!--canvas positioned over this div-->
-    <div class="w3-container w3-twothird" id="game_canvasDiv"></div>
-    </div>
-    </div>
+        <!--game enter buttons-->
+			  <button class="w3-button w3-border w3-xlarge" href="gamePage.html">Guess the number</button>
+        <button class="w3-button w3-border w3-xlarge" onclick="game_enterGame('TTT')">Tic Tac Toe</button>
+		  </div>
+		  <div class="w3-container w3-twothird" id="lP_twoThird"></div>
+	  </div>
+  </section>
+</body>
 </html>
+<!-- END OF HTML -++++++++++++++++++++++++++++++++++-->   
+
+<!--*************************************************************
+  END OF INDEX.HTML
+**************************************************************-->

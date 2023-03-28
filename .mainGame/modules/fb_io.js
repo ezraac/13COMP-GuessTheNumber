@@ -15,14 +15,14 @@ function fb_initialise() {
     console.log('fb_initialise: ');
   
   var firebaseConfig = {
-      apiKey: "AIzaSyB_7NlTteTju303ogHgJ7wonvQsAqPHsy0",
-      authDomain: "school-game-a9c5d.firebaseapp.com",
-      databaseURL: "https://school-game-a9c5d-default-rtdb.firebaseio.com",
-      projectId: "school-game-a9c5d",
-      storageBucket: "school-game-a9c5d.appspot.com",
-      messagingSenderId: "72283854922",
-      appId: "1:72283854922:web:e636104a8d951a83522eb3",
-      measurementId: "G-BYLNK1X8ZQ"
+    apiKey: "AIzaSyACgBfQCpj4tm5GTj7B9bDG_mkYyWYvVM8",
+    authDomain: "comp-2023-ezrachai.firebaseapp.com",
+    databaseURL: "https://comp-2023-ezrachai-default-rtdb.firebaseio.com",
+    projectId: "comp-2023-ezrachai",
+    storageBucket: "comp-2023-ezrachai.appspot.com",
+    messagingSenderId: "334631994952",
+    appId: "1:334631994952:web:34df1f77408a2b16e1fa7d",
+    measurementId: "G-KGPN9CV9LG"
   };
     
     // Initialize Firebase
@@ -71,7 +71,6 @@ function fb_initialise() {
           _dataRec.photoURL = user.photoURL;
           loginStatus = 'logged in via popup';
           console.log('fb_login: status = ' + loginStatus);
-          db_readRec();
           fb_writeRec(AUTHPATH, _dataRec.uid, 1);
           reg_popUp(userDetails);
         })
@@ -189,17 +188,17 @@ function fb_initialise() {
       //if no data in db
       //shows reg page and fills name + email in form
       if (_dbData == null) {
-          reg_showPage();
-          reg_popUp(userDetails);
-          document.getElementById("loadingText").style.display = "none";
+            sessionStorage.setItem("userDetails", JSON.stringify(userDetails));
+            reg_showPage();
+            document.getElementById("loadingText").style.display = "none";
       } else {
-          userDetails.uid = _dbData.uid
-          userDetails.name = _dbData.name
-          userDetails.email = _dbData.email
-          userDetails.photoURL = _dbData.photoURL
-          userDetails.sex = _dbData.sex
-  
-          fb_readRec(GAMEPATH, _dbData.uid, userDetails, fb_processGameData); //reads user game data
+            userDetails.uid = _dbData.uid
+            userDetails.name = _dbData.name
+            userDetails.email = _dbData.email
+            userDetails.photoURL = _dbData.photoURL
+            userDetails.sex = _dbData.sex
+
+            fb_readRec(GAMEPATH, _dbData.uid, userDetails, fb_processGameData); //reads user game data
       }
   }
   
