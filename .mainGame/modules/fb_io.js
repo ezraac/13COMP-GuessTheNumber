@@ -65,14 +65,13 @@ function fb_initialise() {
         var provider = new firebase.auth.GoogleAuthProvider();
         //firebase.auth().signInWithRedirect(provider); // Another method
         firebase.auth().signInWithPopup(provider).then(function(result) {
-          _dataRec.uid      = user.uid;
-          _dataRec.email    = user.email;
-          _dataRec.name     = user.displayName;
-          _dataRec.photoURL = user.photoURL;
+          _dataRec.uid      = result.user.uid;
+          _dataRec.email    = result.user.email;
+          _dataRec.name     = result.user.displayName;
+          _dataRec.photoURL = result.user.photoURL;
           loginStatus = 'logged in via popup';
           console.log('fb_login: status = ' + loginStatus);
           fb_writeRec(AUTHPATH, _dataRec.uid, 1);
-          reg_popUp(userDetails);
         })
         // Catch errors
         .catch(function(error) {
@@ -188,9 +187,9 @@ function fb_initialise() {
       //if no data in db
       //shows reg page and fills name + email in form
       if (_dbData == null) {
+            console.log(userDetails);
             sessionStorage.setItem("userDetails", JSON.stringify(userDetails));
-            reg_showPage();
-            document.getElementById("loadingText").style.display = "none";
+            window.location.replace("pages/regPage.html");
       } else {
             userDetails.uid = _dbData.uid
             userDetails.name = _dbData.name
@@ -215,7 +214,7 @@ function fb_initialise() {
           fb_writeRec(AUTHPATH, userDetails.uid, 1);
       } else {
           _data.userAuthRole = _dbData;
-          HTML_updateHTMLFromPerms();
+         // HTML_updateHTMLFromPerms();
       }
   }
   

@@ -3,6 +3,11 @@
 // written by Ezra 2022
 /*****************************************************/
 
+
+function HTML_login() {
+    fb_initialise()
+    db_login()
+}
 /*****************************************************/
 // HTML_updateHTMLFromPerms();
 // called by firebase.js in fb_processAuthRole();

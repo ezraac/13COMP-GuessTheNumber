@@ -14,6 +14,7 @@ var writeStatus = ' ';
 var userDetails = {
   uid:      '',
   email:    '',
+  name:     '',
   photoURL: '',
   age:      '',
   sex:      '',
