@@ -2,8 +2,6 @@
 // html_manager.js
 // written by Ezra 2022
 /*****************************************************/
-
-
 function HTML_login() {
     fb_initialise()
     db_login()
@@ -41,9 +39,10 @@ function HTML_updateAdminPage(page) {
             break;
         
         case "ad_home":
-            document.getElementById('gamePage').style.display    = "none";
-            document.getElementById("landingPage").style.display   = "block";
-            document.getElementById('s_adminPage').style.display = "none";
+            //document.getElementById('gamePage').style.display    = "none";
+            //document.getElementById("landingPage").style.display   = "block";
+            //document.getElementById('s_adminPage').style.display = "none";
+            window.location.replace("index.html")
             break;
         case "ad_Game":
             document.getElementById("b_adPTB").style.backgroundColor   = "cyan";
@@ -84,11 +83,11 @@ function HTML_editGameInfo(game) {
 /*****************************************************/
 // HTML_loadPage();
 // called in firease.js in fb_processUserDetails
-// removes loading text and shows landing page
+// removes login button and shows landing page
 /*****************************************************/
 function HTML_loadPage() {
-    document.getElementById("landingPage").style.display = "block";
-    document.getElementById("loadingText").style.display = "none"
+   document.getElementById("landingPage").style.display = "block";
+    document.getElementById("lP_login").style.display = "none";
 }
 
 /*****************************************************/
@@ -97,6 +96,6 @@ function HTML_loadPage() {
 // shows landing page and hides gamepage
 /*****************************************************/
 function HTML_returnPage() {
-    document.getElementById("landingPage").style.display = "block";
-    document.getElementById("gamePage").style.display = "none";
+    //document.getElementById("landingPage").style.display = "block";
+    //document.getElementById("gamePage").style.display = "none";
 }

@@ -42,216 +42,214 @@
 // Return:
 /**************************************************************/
 function ad_admin() {
-    if (HTML_isAdmin == true) {
-		document.getElementById('gamePage').style.display    = "none";
-	    document.getElementById("landingPage").style.display = "none";
-	    document.getElementById('s_adminPage').style.display   = "block";
-		ad_user();
+  if (HTML_isAdmin == true) {
+		window.location.replace("pages/adminPage.html")
+	  ad_user();
 	}
-  }
+}
   
-  /**************************************************************/
-  // ad_home()
-  // Input event; called when admin home button clicked
-  // Display home screen
-  // Input:   
-  // Return:
-  /**************************************************************/
-  function ad_home() {
-    console.log('ad_home: ');
-    HTML_updateAdminPage("ad_home")
+/**************************************************************/
+// ad_home()
+// Input event; called when admin home button clicked
+// Display home screen
+// Input:   
+// Return:
+/**************************************************************/
+function ad_home() {
+  console.log('ad_home: ');
+  HTML_updateAdminPage("ad_home")
+
+  // Display the HOME (landing page) screen
+  // ENSURE THE HTML ID ARE CORRECT                                      //<=======
+                    //<=======
+}
+
+/**************************************************************/
+// ad_user()
+// Input event; called by ad_admin and when admin user button clicked.
+// Display user screen
+// Input:   
+// Return:
+/**************************************************************/
+function ad_user() {
+  console.log('ad_user: ');
+  HTML_updateAdminPage("ad_user")
+  // ENSURE THE READ FUNCTION NAME & THE PATH NAME ARE CORRECT           //<=======
+  fb_readAll(DBPATH, "", ad_processUSERReadAll);                            //<=======
+}
+
+/**************************************************************/
+// ad_Game()
+// Input event; called when admin PTB button clicked
+// Display BB screen
+// Input:   
+// Return:
+/**************************************************************/
+function ad_Game() {
+  console.log('ad_Game: ');
   
-    // Display the HOME (landing page) screen
-    // ENSURE THE HTML ID ARE CORRECT                                      //<=======
-                      //<=======
-  }
+    HTML_updateAdminPage("ad_Game")
+  // ENSURE THE READ FUNCTION NAME & THE PATH NAME ARE CORRECT           //<=======
+  fb_readAll(GAMEPATH, "", ad_processGameReadAll);                                   //<=======
+}
+
+/**************************************************************/
+// ad_processUSERReadAll(_result, _dbRec)
+// Called by db_readAll to handle result of read ALL USER records request.
+// Save data & update display with record info
+// Input:  read status "OK", data record just read. 
+//         NOTE: this is the raw data, EG snapshot, NOT snapshot.val()
+// Return:
+/**************************************************************/
+function ad_processUSERReadAll(_result, _dbRec) {
+  console.log('ad_processUSERReadAll: ' + _result);
+  console.log(_dbRec)
   
-  /**************************************************************/
-  // ad_user()
-  // Input event; called by ad_admin and when admin user button clicked.
-  // Display user screen
-  // Input:   
-  // Return:
-  /**************************************************************/
-  function ad_user() {
-    console.log('ad_user: ');
-    HTML_updateAdminPage("ad_user")
-    // ENSURE THE READ FUNCTION NAME & THE PATH NAME ARE CORRECT           //<=======
-    fb_readAll(DBPATH, "", ad_processUSERReadAll);                            //<=======
-  }
-  
-  /**************************************************************/
-  // ad_Game()
-  // Input event; called when admin PTB button clicked
-  // Display BB screen
-  // Input:   
-  // Return:
-  /**************************************************************/
-  function ad_Game() {
-    console.log('ad_Game: ');
-    
-     HTML_updateAdminPage("ad_Game")
-    // ENSURE THE READ FUNCTION NAME & THE PATH NAME ARE CORRECT           //<=======
-    fb_readAll(GAMEPATH, "", ad_processGameReadAll);                                   //<=======
-  }
-  
-  /**************************************************************/
-  // ad_processUSERReadAll(_result, _dbRec)
-  // Called by db_readAll to handle result of read ALL USER records request.
-  // Save data & update display with record info
-  // Input:  read status "OK", data record just read. 
-  //         NOTE: this is the raw data, EG snapshot, NOT snapshot.val()
-  // Return:
-  /**************************************************************/
-  function ad_processUSERReadAll(_result, _dbRec) {
-    console.log('ad_processUSERReadAll: ' + _result);
-    console.log(_dbRec)
-    
-  
-    var childKey;
-    var childData;
-    var ad_adminArray = [];
-  
-    // Note: if read was successful, 1st input parameter must = "OK"       //<=======
-    if (_result = "ok") {                                        
-      _dbRec.forEach(function(childSnapshot) {
-        childKey = childSnapshot.key;
-        childData = childSnapshot.val();
-  
-        // ENSURE THE FEILDS YOU PUSH INTO THE ARRAY OF OBJECTS            //<=======
-        //  MATCH YOUR FIREBASE RECORDS FOR THE PATH                       //<=======
-        ad_adminArray.push({
-          name:         childData.name,
-          email:        childData.email,
-          // Left photoURL out as its so long the table will be too wide for the screen
-          //photoURL:   childData.photoURL,  
-          phone:        childData.phone,
-          age:          childData.age,
-          sex:          childData.sex,
-        //   addrNum:      childData.addrNum,
-        //   addrSt:       childData.addrSt,
-        //   addrSuburb:   childData.addrSuburb,
-        //   addrCity:     childData.addrCity,
-        //   addrPostCode: childData.addrPostCode,
-          uid:          childKey
-        });
+
+  var childKey;
+  var childData;
+  var ad_adminArray = [];
+
+  // Note: if read was successful, 1st input parameter must = "OK"       //<=======
+  if (_result = "ok") {                                        
+    _dbRec.forEach(function(childSnapshot) {
+      childKey = childSnapshot.key;
+      childData = childSnapshot.val();
+
+      // ENSURE THE FEILDS YOU PUSH INTO THE ARRAY OF OBJECTS            //<=======
+      //  MATCH YOUR FIREBASE RECORDS FOR THE PATH                       //<=======
+      ad_adminArray.push({
+        name:         childData.name,
+        email:        childData.email,
+        // Left photoURL out as its so long the table will be too wide for the screen
+        //photoURL:   childData.photoURL,  
+        phone:        childData.phone,
+        age:          childData.age,
+        sex:          childData.sex,
+      //   addrNum:      childData.addrNum,
+      //   addrSt:       childData.addrSt,
+      //   addrSuburb:   childData.addrSuburb,
+      //   addrCity:     childData.addrCity,
+      //   addrPostCode: childData.addrPostCode,
+        uid:          childKey
       });
-  
-      // build & display user data
-      // MAKE SURE THE FOLOWING PARAMETERS ARE CORRECT. PARAMETER:         //<=======
-      //  4 = HTML ID OF DIV TO HIDE OR LEAVE EMPTY                        //<=======
-      //  5 = HTML ID OF DIV TO HIDE OR LEAVE EMPTY                        //<=======
-      //  6 = HTML ID OF DIV TO SHOW OR LEAVE EMPTY                        //<=======
-      //  7 = COLUMMN NUMBER WHICH CONTAINS THE DATABASE KEY.              //<=======
-      //  8 = DATABASE PATH THE RECORDS WERE READ FROM.                    //<=======
-      ad_displayAll("t_userData", ad_adminArray, true,                     
-        "landingPage", "gamePage", "s_adminPage", 6, DBPATH);        //<=======
-    }
+    });
+
+    // build & display user data
+    // MAKE SURE THE FOLOWING PARAMETERS ARE CORRECT. PARAMETER:         //<=======
+    //  4 = HTML ID OF DIV TO HIDE OR LEAVE EMPTY                        //<=======
+    //  5 = HTML ID OF DIV TO HIDE OR LEAVE EMPTY                        //<=======
+    //  6 = HTML ID OF DIV TO SHOW OR LEAVE EMPTY                        //<=======
+    //  7 = COLUMMN NUMBER WHICH CONTAINS THE DATABASE KEY.              //<=======
+    //  8 = DATABASE PATH THE RECORDS WERE READ FROM.                    //<=======
+    ad_displayAll("t_userData", ad_adminArray, true,                     
+      "landingPage", "gamePage", "s_adminPage", 6, DBPATH);        //<=======
   }
-  
-  /**************************************************************/
-  // ad_processBBReadAll(_result, _dbRec)
-  // Called by db_readAll to handle result of read ALL BB records request.
-  // Save data & update display with record info
-  // Input:  read status "OK", data record just read. 
-  //         NOTE: this is the raw data, EG snapshot, NOT snapshot.val()
-  // Return:
-  /**************************************************************/
-  function ad_processGameReadAll(_result, _dbRec) {
-    console.log('ad_processBBReadAll: ', 'result = ' + _result);
-  
-    var childKey;
-    var childData;
-    var ad_adminArray = [];
-  
-    // Note: if read was successful, 1st input parameter must = "ok"       //<=======
-    if (_result == 'ok') {
-      _dbRec.forEach(function(childSnapshot) {
-        childKey = childSnapshot.key;
-        childData = childSnapshot.val();
-  
-        // ENSURE THE FEILDS YOU PUSH INTO THE ARRAY OF OBJECTS            //<=======
-        //  MATCH YOUR FIREBASE RECORDS FOR THE PATH                       //<=======
-        ad_adminArray.push({
-          gameName: childData.gameName,
-          PTB_timeRec: childData.PTB_timeRec,
-		  PTB_avgScore: childData.PTB_avgScore,
-          TTT_Losses: childData.TTT_Losses,
-          TTT_Wins: childData.TTT_Wins,
-          uid:  childKey,
-        });
+}
+
+/**************************************************************/
+// ad_processBBReadAll(_result, _dbRec)
+// Called by db_readAll to handle result of read ALL BB records request.
+// Save data & update display with record info
+// Input:  read status "OK", data record just read. 
+//         NOTE: this is the raw data, EG snapshot, NOT snapshot.val()
+// Return:
+/**************************************************************/
+function ad_processGameReadAll(_result, _dbRec) {
+  console.log('ad_processBBReadAll: ', 'result = ' + _result);
+
+  var childKey;
+  var childData;
+  var ad_adminArray = [];
+
+  // Note: if read was successful, 1st input parameter must = "ok"       //<=======
+  if (_result == 'ok') {
+    _dbRec.forEach(function(childSnapshot) {
+      childKey = childSnapshot.key;
+      childData = childSnapshot.val();
+
+      // ENSURE THE FEILDS YOU PUSH INTO THE ARRAY OF OBJECTS            //<=======
+      //  MATCH YOUR FIREBASE RECORDS FOR THE PATH                       //<=======
+      ad_adminArray.push({
+        gameName: childData.gameName,
+        PTB_timeRec: childData.PTB_timeRec,
+    PTB_avgScore: childData.PTB_avgScore,
+        TTT_Losses: childData.TTT_Losses,
+        TTT_Wins: childData.TTT_Wins,
+        uid:  childKey,
       });
-		
-      // build & display user data
-      // MAKE SURE THE FOLOWING PARAMETERS ARE CORRECT. PARAMETER:         //<=======
-      //  7 = COLUMMN NUMBER WHICH CONTAINS THE DATABASE KEY.              //<=======
-      //  8 = DATABASE PATH THE RECORDS WERE READ FROM.                    //<=======
-      ad_displayAll("t_userData", ad_adminArray, true, "", "", "", 
-                    6, GAMEPATH);                                                //<=======
-    } else if (_result == 'n/a') {
-      ad_displayAll("t_userData", ad_adminArray, true, "", "", "", 
-                    6, GAMEPATH);                                                //<=======
-    }
-  }
+    });
   
-  /**************************************************************/
-  // ad_userInput(_feildName, _data)
-  // Called by finishTdEdit
-  // Validate numeric data & convert string number input to numerics
-  // Input:  field and user input
-  // Return: if validation ok: [true, numeric user input] else: [false, user input]
-  /**************************************************************/
-  function ad_userInput(_feildName, _data) {
-    console.log("ad_userInput: _feildName = " + _feildName + ',  _data = ' + _data);
-    // Set up data types; 'a' for aplhabetic,   'n' for numeric  &  'b' for both
-    // ENSURE THE FEILDS BELOW MATCH YOUR DB FILEDS                       //<=======
-    //   AND THE DATATYPE IS CORRECTLY SET                                //<=======
-    var vd_dataTypes = {            
-      name:         'a',
-      email:        'b',
-      // Left photoURL out - its so long the table will be too wide for screen
-      //photoURL:   'b', 
-      gameName:     'b',
-      phone:        'n',
-      age:          'n',
-      sex:          'a',
-    //   addrNum:      'n',
-    //   addrSt:       'a',
-    //   addrSuburb:   'a',
-    //   addrCity:     'a',
-    //   addrPostCode: 'n',
-      uid:          'b',
-   
-    //   BBLevel:      'n',
-    //   BBFails:      'n',
-    //   BBHits:       'n',
-	  PTB_avgScore:	'n',
-      PTB_timeRec:	'n',
+    // build & display user data
+    // MAKE SURE THE FOLOWING PARAMETERS ARE CORRECT. PARAMETER:         //<=======
+    //  7 = COLUMMN NUMBER WHICH CONTAINS THE DATABASE KEY.              //<=======
+    //  8 = DATABASE PATH THE RECORDS WERE READ FROM.                    //<=======
+    ad_displayAll("t_userData", ad_adminArray, true, "", "", "", 
+                  6, GAMEPATH);                                                //<=======
+  } else if (_result == 'n/a') {
+    ad_displayAll("t_userData", ad_adminArray, true, "", "", "", 
+                  6, GAMEPATH);                                                //<=======
+  }
+}
+
+/**************************************************************/
+// ad_userInput(_feildName, _data)
+// Called by finishTdEdit
+// Validate numeric data & convert string number input to numerics
+// Input:  field and user input
+// Return: if validation ok: [true, numeric user input] else: [false, user input]
+/**************************************************************/
+function ad_userInput(_feildName, _data) {
+  console.log("ad_userInput: _feildName = " + _feildName + ',  _data = ' + _data);
+  // Set up data types; 'a' for aplhabetic,   'n' for numeric  &  'b' for both
+  // ENSURE THE FEILDS BELOW MATCH YOUR DB FILEDS                       //<=======
+  //   AND THE DATATYPE IS CORRECTLY SET                                //<=======
+  var vd_dataTypes = {            
+    name:         'a',
+    email:        'b',
+    // Left photoURL out - its so long the table will be too wide for screen
+    //photoURL:   'b', 
+    gameName:     'b',
+    phone:        'n',
+    age:          'n',
+    sex:          'a',
+  //   addrNum:      'n',
+  //   addrSt:       'a',
+  //   addrSuburb:   'a',
+  //   addrCity:     'a',
+  //   addrPostCode: 'n',
+    uid:          'b',
+  
+  //   BBLevel:      'n',
+  //   BBFails:      'n',
+  //   BBHits:       'n',
+  PTB_avgScore:	'n',
+    PTB_timeRec:	'n',
+  
+    TTT_Wins:        'n',
+    TTT_Losses:      'n',
+  //   TTTTime:      'n'
+  };
     
-      TTT_Wins:        'n',
-      TTT_Losses:      'n',
-    //   TTTTime:      'n'
-    };
-      
-    if (vd_dataTypes[_feildName] == 'n') {
-      temp = Number(_data); 
-      if (isNaN(temp)) {
-        return [false, _data];
-      }  
-      return [true, temp];
-    } 
-  
-    else {
-      return [true, _data];
-    }
+  if (vd_dataTypes[_feildName] == 'n') {
+    temp = Number(_data); 
+    if (isNaN(temp)) {
+      return [false, _data];
+    }  
+    return [true, temp];
+  } 
+
+  else {
+    return [true, _data];
   }
-  
-  //================================================================================= 
-  //        YOU SHOULD NOT ALTER ANY OF THE CODE BELOW                     //<=======
-  //=================================================================================
-  
-  /**************************************************************/
-  // ad_displayAll(_tableId, _array, _action, _hideId, _showId, _path)
+}
+
+//================================================================================= 
+//        YOU SHOULD NOT ALTER ANY OF THE CODE BELOW                     //<=======
+//=================================================================================
+
+/**************************************************************/
+// ad_displayAll(_tableId, _array, _action, _hideId, _showId, _path)
 // Called by ad_dbRAllUResult & ad_dbRAllBBResult
 // Display all user records screen:
 //    1. optionaly hide other screen & display the admin screen.

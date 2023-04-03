@@ -45,33 +45,33 @@
 //  BODY
 ****************************************************-->
 <body>
-  <button id="lP_login" class="w3-button w3-border w3-margin" onclick="HTML_login()"></button>
+  <button id="lP_login" class="w3-button w3-border w3-margin" onclick="HTML_login()">CLICK TO LOG IN</button>
   <!--***************************************************
   //  landingPage
   ****************************************************-->
   <section id="landingPage">
-	  <div class="w3-container">
+    <div class="w3-container">
       <div class="w3-row">
         <div class="w3-container w3-grey w3-col m10">
           <h1 class="w3-wide">Welcome to Big Ezra's games!</h1>
         </div>
-		  <!-- admin button -->
+      <!-- admin button -->
         <div class="w3-container w3-grey w3-col m2">
           <button id="lP_Admin" style="background-color: grey; width: 100%;"
                   class="w3-button w3-border w3-margin" 
-                  href="pages/adminPage.html">ADMIN
+                  onclick="ad_admin()">ADMIN
           </button>
         </div>
       </div>
-		  <h1 class="w3-wide" id="helloHeader">hello</h1>
-		  <div class="w3-container w3-third" id="lP_oneThird">
+      <h1 class="w3-wide" id="helloHeader">hello</h1>
+      <div class="w3-container w3-third" id="lP_oneThird">
 
         <!--game enter buttons-->
-			  <button class="w3-button w3-border w3-xlarge" href="gamePage.html">Guess the number</button>
+        <button class="w3-button w3-border w3-xlarge" href="gamePage.html">Guess the number</button>
         <button class="w3-button w3-border w3-xlarge" onclick="game_enterGame('TTT')">Tic Tac Toe</button>
-		  </div>
-		  <div class="w3-container w3-twothird" id="lP_twoThird"></div>
-	  </div>
+      </div>
+      <div class="w3-container w3-twothird" id="lP_twoThird"></div>
+    </div>
   </section>
 </body>
 </html>
