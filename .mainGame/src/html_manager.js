@@ -6,6 +6,20 @@ function HTML_login() {
     fb_initialise()
     db_login()
 }
+
+window.onload = function () {
+    if (window.location.pathname.split("/").pop() == "regPage.html") {
+        reg_popUp();
+    }
+
+    function reg_popUp() {
+      fb_initialise();
+      userDetails = JSON.parse(sessionStorage.getItem("userDetails"));
+      console.log(userDetails);
+      document.getElementById("p_regName").innerHTML = userDetails.name;        //<=======    
+      document.getElementById("p_regEmail").innerHTML = userDetails.email;       //<=======  
+    }
+  }
 /*****************************************************/
 // HTML_updateHTMLFromPerms();
 // called by firebase.js in fb_processAuthRole();

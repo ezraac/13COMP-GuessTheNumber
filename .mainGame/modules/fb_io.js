@@ -51,6 +51,7 @@ function fb_login(_dataRec, permissions) {
             _dataRec.name = user.displayName;
             _dataRec.photoURL = user.photoURL;
 
+
             fb_readRec(DBPATH, _dataRec.uid, userDetails, fb_processUserDetails); //reads user details
             fb_readOn(DBPATH, _dataRec.uid, userDetails, fb_processReadOn)
             fb_readRec(AUTHPATH, _dataRec.uid, permissions, fb_processAuthRole); //reads user auth role
@@ -94,7 +95,7 @@ function fb_login(_dataRec, permissions) {
 // Input:  path to write to, the key, data to write
 // Return: 
 /*****************************************************/
-function fb_writeRec(_path, _key, _data) {
+function fb_writeRec(_path, _key, _data, _location) {
     console.log(`fb_WriteRec: path= ${_path} key= ${_key} data= ${_data.name}`);
     writeStatus = "waiting"
     firebase.database().ref(_path + "/" + _key).set(_data, function (error) {
@@ -104,6 +105,10 @@ function fb_writeRec(_path, _key, _data) {
         }
         else {
             writeStatus = "ok"
+            console.log(writeStatus)
+            if (_location == "reg") {
+                window.location.replace("../index.html")
+            }
         }
     });
     console.log("fb_writerec exit")

@@ -46,13 +46,10 @@
     ****************************************************-->
 <div class="w3-container">
     <h1 class="w3-wide">guess the number</h1>
-    <div class="w3-container w3-quarter">
-        <h1 id="hellouser" style="text-align: center;">Hello Tommy</h1>
-    </div>
-
-    <div class="w3-container w3-row">
+    <h1 id="hellouser">Hello Tommy</h1>
+    <div class="w3-container w3-row ">
         <!--game details for popBall-->
-        <div class="w3-container w3-quarter">
+        <div class="w3-container w3-col l2">
             <p id="hitscore">Average Hit Score: 0</p>
             <p id="highavgscore">Highest AHS: 0</p>
             <p id="highscore">Fastest Time: 0</p>
@@ -68,12 +65,12 @@
                 id="game_loginButton">RETURN</button>
         </div>
 
-        <div class="w3-container w3-half" >
+        <div class="w3-container w3-col l8">
             <!--canvas positioned over this div-->
-            <div class="w3-container"></div>
+            <div id="game_canvasDiv"></div>
         </div>
 
-        <div class="w3-container w3-quarter">
+        <div class="w3-container w3-col l2">
             <p id="hitscore">Average Hit Score: 0</p>
             <p id="highavgscore">Highest AHS: 0</p>
             <p id="highscore">Fastest Time: 0</p>
@@ -82,4 +79,5 @@
         </div>
     </div>
 </div>
+
 </html>
