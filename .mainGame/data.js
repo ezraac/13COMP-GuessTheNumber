@@ -8,16 +8,16 @@ const GAMEPATH = "userGameData";
 const AUTHPATH = "authorizedUsers";
 
 var loginStatus = ' ';
-var readStatus  = ' ';
+var readStatus = ' ';
 var writeStatus = ' ';
 
 var userDetails = {
-  uid:      '',
-  email:    '',
-  name:     '',
+  uid: '',
+  email: '',
+  name: '',
   photoURL: '',
-  age:      '',
-  sex:      '',
+  age: '',
+  sex: '',
 };
 
 var permissions = {
@@ -25,11 +25,11 @@ var permissions = {
 }
 
 var userGameData = {
-  PTB_avgScore:0,
-  PTB_timeRec:0,
+  PTB_avgScore: 0,
+  PTB_timeRec: 0,
   gameName: '',
   TTT_Wins: 0,
-  TTT_Losses:0,
+  TTT_Losses: 0,
 }
 
 var dbArray = [];

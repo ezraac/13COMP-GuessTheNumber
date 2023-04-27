@@ -31,18 +31,18 @@
 //  registration page is displayed                                    //<=======
 // Save name & email into the form
 // ENSURE THE OBJECT NAME IS CORRECT; its currently details           //<=======
-window.onload = function() {
+window.onload = function () {
   reg_popUp();
 
   function reg_popUp() {
     fb_initialise();
     userDetails = JSON.parse(sessionStorage.getItem("userDetails"));
     console.log(userDetails);
-    document.getElementById("p_regName").innerHTML  = userDetails.name;        //<=======    
+    document.getElementById("p_regName").innerHTML = userDetails.name;        //<=======    
     document.getElementById("p_regEmail").innerHTML = userDetails.email;       //<=======  
   }
 }
-  
+
 /**************************************************************/
 // reg_regDetailsEntered()
 // Input event; called when user clicks ?????????? button               //<========
@@ -51,30 +51,30 @@ window.onload = function() {
 // Return:
 /**************************************************************/
 function reg_regDetailsEntered() {
-  console.log('reg_regDetailsEntered'); 
+  console.log('reg_regDetailsEntered');
 
 
   // Save player1's details from the form into your details object
   //  ENSURE THE OBJECT NAME THE PROGRAM SAVES TO IS CORRECT; 
-  userGameData.gameName     =        reg_getFormItemValue("f_reg", 0);       //<=======
-  userDetails.phone        = Number(reg_getFormItemValue("f_reg", 1));      //<=======
-  userDetails.sex          =        reg_getFormItemValue("f_reg", 2);
-  userDetails.age          = Number(reg_getFormItemValue("f_reg", 3))
-  
+  userGameData.gameName = reg_getFormItemValue("f_reg", 0);       //<=======
+  userDetails.phone = Number(reg_getFormItemValue("f_reg", 1));      //<=======
+  userDetails.sex = reg_getFormItemValue("f_reg", 2);
+  userDetails.age = Number(reg_getFormItemValue("f_reg", 3))
+
   console.log("reg_regDetailsEntered: form passed html validation - " +
-            document.getElementById('f_reg').checkValidity());
-  
+    document.getElementById('f_reg').checkValidity());
+
   if (isNaN(userDetails.phone)) {
-      alert("Please input a proper phone number.");
+    alert("Please input a proper phone number.");
   } else {
     if (document.getElementById('f_reg').checkValidity()) {
-        fb_writeRec(DBPATH, userDetails.uid, userDetails); //<=======
-        fb_writeRec(GAMEPATH, userDetails.uid, userGameData);
-        window.location.replace("../index.html")
-        // document.getElementById("username").innerHTML = `Username: ${userGameData.gameName}`;
-        // document.getElementById("landingPage").style.display = "block";
-        // document.getElementById("registrationPage").style.display = "none";
-      }
+      fb_writeRec(DBPATH, userDetails.uid, userDetails); //<=======
+      fb_writeRec(GAMEPATH, userDetails.uid, userGameData);
+      window.location.replace("../index.html")
+      // document.getElementById("username").innerHTML = `Username: ${userGameData.gameName}`;
+      // document.getElementById("landingPage").style.display = "block";
+      // document.getElementById("registrationPage").style.display = "none";
+    }
   }
   // Only write record to DB if all the fom's input passed html validation
 }
@@ -89,7 +89,7 @@ function reg_regDetailsEntered() {
 function reg_getFormItemValue(_elementId, _item) {
   //console.log('reg_getFormItemValue: _elementId=' + _elementId +
   //	  ',  _item= ' + _item);
-    
+
   return document.getElementById(_elementId).elements.item(_item).value;
 }
 /**************************************************************/

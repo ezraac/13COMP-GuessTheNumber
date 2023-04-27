@@ -13,25 +13,25 @@
 /*****************************************************/
 function fb_initialise() {
     console.log('fb_initialise: ');
-  
-  var firebaseConfig = {
-    apiKey: "AIzaSyACgBfQCpj4tm5GTj7B9bDG_mkYyWYvVM8",
-    authDomain: "comp-2023-ezrachai.firebaseapp.com",
-    databaseURL: "https://comp-2023-ezrachai-default-rtdb.firebaseio.com",
-    projectId: "comp-2023-ezrachai",
-    storageBucket: "comp-2023-ezrachai.appspot.com",
-    messagingSenderId: "334631994952",
-    appId: "1:334631994952:web:34df1f77408a2b16e1fa7d",
-    measurementId: "G-KGPN9CV9LG"
-  };
-    
+
+    var firebaseConfig = {
+        apiKey: "AIzaSyACgBfQCpj4tm5GTj7B9bDG_mkYyWYvVM8",
+        authDomain: "comp-2023-ezrachai.firebaseapp.com",
+        databaseURL: "https://comp-2023-ezrachai-default-rtdb.firebaseio.com",
+        projectId: "comp-2023-ezrachai",
+        storageBucket: "comp-2023-ezrachai.appspot.com",
+        messagingSenderId: "334631994952",
+        appId: "1:334631994952:web:34df1f77408a2b16e1fa7d",
+        measurementId: "G-KGPN9CV9LG"
+    };
+
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-    console.log(firebase);	
-          
+    console.log(firebase);
+
     database = firebase.database();
-  }
-  
+}
+
 /*****************************************************/
 // fb_login(_dataRec, permissions)
 // Called by setup
@@ -40,52 +40,52 @@ function fb_initialise() {
 // Return: n/a
 /*****************************************************/
 function fb_login(_dataRec, permissions) {
-console.log('fb_login: ');
-firebase.auth().onAuthStateChanged(newLogin);
+    console.log('fb_login: ');
+    firebase.auth().onAuthStateChanged(newLogin);
 
-function newLogin(user) {
-    if (user) {
-        // user is signed in, so save Google login details
-        _dataRec.uid      = user.uid;
-        _dataRec.email    = user.email;
-        _dataRec.name     = user.displayName;
-        _dataRec.photoURL = user.photoURL;
+    function newLogin(user) {
+        if (user) {
+            // user is signed in, so save Google login details
+            _dataRec.uid = user.uid;
+            _dataRec.email = user.email;
+            _dataRec.name = user.displayName;
+            _dataRec.photoURL = user.photoURL;
 
-        fb_readRec(DBPATH, _dataRec.uid, userDetails, fb_processUserDetails); //reads user details
-        fb_readOn(DBPATH, _dataRec.uid, userDetails, fb_processReadOn)
-        fb_readRec(AUTHPATH, _dataRec.uid, permissions, fb_processAuthRole); //reads user auth role
-        loginStatus = 'logged in';
-        console.log('fb_login: status = ' + loginStatus);
-    }
-    else {
-    // user NOT logged in, so redirect to Google login
-    loginStatus = 'logged out';
-    console.log('fb_login: status = ' + loginStatus);
-
-    var provider = new firebase.auth.GoogleAuthProvider();
-    //firebase.auth().signInWithRedirect(provider); // Another method
-    firebase.auth().signInWithPopup(provider).then(function(result) {
-        _dataRec.uid      = result.user.uid;
-        _dataRec.email    = result.user.email;
-        _dataRec.name     = result.user.displayName;
-        _dataRec.photoURL = result.user.photoURL;
-        loginStatus = 'logged in via popup';
-        console.log('fb_login: status = ' + loginStatus);
-        fb_writeRec(AUTHPATH, _dataRec.uid, 1);
-    })
-    // Catch errors
-    .catch(function(error) {
-        if(error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        loginStatus = 'error: ' + error.code;
-        console.log('fb_login: error code = ' + errorCode + '    ' + errorMessage);
-
-        alert(error);
+            fb_readRec(DBPATH, _dataRec.uid, userDetails, fb_processUserDetails); //reads user details
+            fb_readOn(DBPATH, _dataRec.uid, userDetails, fb_processReadOn)
+            fb_readRec(AUTHPATH, _dataRec.uid, permissions, fb_processAuthRole); //reads user auth role
+            loginStatus = 'logged in';
+            console.log('fb_login: status = ' + loginStatus);
         }
-    });
+        else {
+            // user NOT logged in, so redirect to Google login
+            loginStatus = 'logged out';
+            console.log('fb_login: status = ' + loginStatus);
+
+            var provider = new firebase.auth.GoogleAuthProvider();
+            //firebase.auth().signInWithRedirect(provider); // Another method
+            firebase.auth().signInWithPopup(provider).then(function (result) {
+                _dataRec.uid = result.user.uid;
+                _dataRec.email = result.user.email;
+                _dataRec.name = result.user.displayName;
+                _dataRec.photoURL = result.user.photoURL;
+                loginStatus = 'logged in via popup';
+                console.log('fb_login: status = ' + loginStatus);
+                fb_writeRec(AUTHPATH, _dataRec.uid, 1);
+            })
+                // Catch errors
+                .catch(function (error) {
+                    if (error) {
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        loginStatus = 'error: ' + error.code;
+                        console.log('fb_login: error code = ' + errorCode + '    ' + errorMessage);
+
+                        alert(error);
+                    }
+                });
+        }
     }
-}
 }
 
 /*****************************************************/
@@ -94,18 +94,18 @@ function newLogin(user) {
 // Input:  path to write to, the key, data to write
 // Return: 
 /*****************************************************/
-function fb_writeRec(_path, _key, _data) { 
-console.log(`fb_WriteRec: path= ${_path} key= ${_key} data= ${_data.name}`);
+function fb_writeRec(_path, _key, _data) {
+    console.log(`fb_WriteRec: path= ${_path} key= ${_key} data= ${_data.name}`);
     writeStatus = "waiting"
-firebase.database().ref(_path + "/" + _key).set(_data, function(error) {
-    if (error) {
-        writeStatus = "failure"
-        console.log(error)
-    }
-    else {
-        writeStatus = "ok"
-    }
-});
+    firebase.database().ref(_path + "/" + _key).set(_data, function (error) {
+        if (error) {
+            writeStatus = "failure"
+            console.log(error)
+        }
+        else {
+            writeStatus = "ok"
+        }
+    });
     console.log("fb_writerec exit")
 }
 
@@ -116,7 +116,7 @@ firebase.database().ref(_path + "/" + _key).set(_data, function(error) {
 // Return:
 /*****************************************************/
 function fb_readAll(_path, _data, _processAll) {
-console.log('fb_readAll: path= ' + _path);
+    console.log('fb_readAll: path= ' + _path);
 
     readStatus = "waiting"
     firebase.database().ref(_path).once("value", gotRecord, readErr)
@@ -149,7 +149,7 @@ console.log('fb_readAll: path= ' + _path);
 // Input:  path & key of record to read and where to save it
 // Return:  
 /*****************************************************/
-function fb_readRec(_path, _key, _data, _processData) {	
+function fb_readRec(_path, _key, _data, _processData) {
     console.log('fb_readRec: path= ' + _path + '  key= ' + _key);
 
     readStatus = "waiting"
@@ -231,7 +231,7 @@ function fb_processGameData(_dbData, _data) {
     userGameData.PTB_avgScore = _dbData.PTB_avgScore
     userGameData.TTT_Wins = _dbData.TTT_Wins
     userGameData.TTT_Losses = _dbData.TTT_Losses
-    
+
     HTML_loadPage();
     console.log("finished processing data")
 }
@@ -244,7 +244,7 @@ data is a whole persons data depending on path read
 */
 function fb_processAll(_result, _dbData, _data, dbKeys) {
     console.log(_data)
-    for (i=0; i < dbKeys.length; i++) {
+    for (i = 0; i < dbKeys.length; i++) {
         let key = dbKeys[i]
         _data.push({
             name: _dbData[key].name,
@@ -276,7 +276,7 @@ function fb_processReadOn(_dbData, _data) {
 }
 
 function fb_readOn(_path, _key, _data, _processData) {
-        //console.log('fb_readRec: path= ' + _path + '  key= ' + _key);
+    //console.log('fb_readRec: path= ' + _path + '  key= ' + _key);
 
     readStatus = "waiting"
     firebase.database().ref(`${_path}/${_key}`).on("value", gotRecord, readErr)

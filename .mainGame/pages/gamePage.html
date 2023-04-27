@@ -1,73 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <title>13COMP assessment</title>
-  <meta charset="UTF-8">
-  <meta name="description" content="13COMP assessment">
-  <meta name="author" content="Ezra">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/x-icon" href="/assets/images/dtec_favicon.PNG">
-  
-  <!-- stylesheets *******************************************-->
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  <link rel="stylesheet" href="style.css">
- 
-  <!-- P5.js & P5.play ***************************************-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script> 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
-  <script src="https://p5play.org/v3/planck.min.js"></script>
-  <script src="https://p5play.org/v3/p5play.js"></script>
-  
-  <!-- firebase start ****************************************-->
-  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
-  <!-- Firebase App (core Firebase SDK) always required & must be listed 1st -->
-  <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-app.js"></script>  
-  <!-- Add Firebase products that you want to use -->
-  <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-auth.js"></script>  
-  <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-database.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-analytics.js"></script> 
-  <!-- firebase end ******************************************-->
-  
-  <!-- JQUERY ************************************************-->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  
-  <!-- Your modules ******************************************-->
-  <script defer src="../style.css"></script>
-  <script defer src="../modules/fb_io.js"></script>
-  <script defer src="../modules/ad_manager.js"></script>
-  <script defer src="../src/html_manager.js"></script>
+    <title>13COMP assessment</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="13COMP assessment">
+    <meta name="author" content="Ezra">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/assets/images/dtec_favicon.PNG">
+
+    <!-- stylesheets *******************************************-->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- P5.js & P5.play ***************************************-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+    <script src="https://p5play.org/v3/planck.min.js"></script>
+    <script src="https://p5play.org/v3/p5play.js"></script>
+
+    <!-- firebase start ****************************************-->
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+    <!-- Firebase App (core Firebase SDK) always required & must be listed 1st -->
+    <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-app.js"></script>
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-analytics.js"></script>
+    <!-- firebase end ******************************************-->
+
+    <!-- JQUERY ************************************************-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Your modules ******************************************-->
+    <script defer src="../modules/fb_io.js"></script>
+    <script defer src="../modules/ad_manager.js"></script>
+    <script defer src="../src/html_manager.js"></script>
+    <script defer src="../game_manager.js"></script>
+    <script defer src="../gtn.js"></script>
 
 </head>
-    <!--***************************************************
+<!--***************************************************
     //  gamePage
     ****************************************************-->
-    <div class="w3-container">
-        <h1 class="w3-wide">guess the number</h1>
-        <div class="w3-container w3-third" id="game_oneThird">
-    <h1 id="hellouser" style="text-align: center;">Hello Tommy</h1>
-    <div class="w3-container w3-third">
+<div class="w3-container">
+    <h1 class="w3-wide">guess the number</h1>
+    <div class="w3-container w3-quarter">
+        <h1 id="hellouser" style="text-align: center;">Hello Tommy</h1>
+    </div>
 
+    <div class="w3-container w3-row">
         <!--game details for popBall-->
-        <div class="w3-container" id="game_textDiv">
-        <p id="hitscore">Average Hit Score: 0</p>
-        <p id="highavgscore">Highest AHS: 0</p>
-        <p id="highscore">Fastest Time: 0</p>
-        <p id="misses">Misses: 0</p>
-        <p id="username">Username: Tommy1</p>
-        <div class="w3-container" id="game_timeDiv">
-            <p id=gameTimer>Time: 0s</p>
+        <div class="w3-container w3-quarter">
+            <p id="hitscore">Average Hit Score: 0</p>
+            <p id="highavgscore">Highest AHS: 0</p>
+            <p id="highscore">Fastest Time: 0</p>
+            <p id="misses">Misses: 0</p>
+            <p id="username">Username: Tommy1</p>
+            <div class="w3-container" id="game_timeDiv">
+                <p id=gameTimer>Time: 0s</p>
+            </div>
+
+            <button class="w3-button w3-border w3-xlarge" onclick="game_gameStart()"
+                id="game_startButton">START</button>
+            <button class="w3-button w3-border w3-xlarge" onclick="HTML_returnPage()"
+                id="game_loginButton">RETURN</button>
         </div>
 
-        <button class="w3-button w3-border w3-xlarge" onclick="game_gameStart()" id="game_startButton">START</button>
-        <button class="w3-button w3-border w3-xlarge" onclick="HTML_returnPage()" id="game_loginButton">RETURN</button>
+        <div class="w3-container w3-half" >
+            <!--canvas positioned over this div-->
+            <div class="w3-container"></div>
         </div>
-    </div>
-        </div>
-        <div class="w3-container w3-twothird" id="game_twoThird">
 
-    <!--canvas positioned over this div-->
-    <div class="w3-container w3-twothird" id="game_canvasDiv"></div>
+        <div class="w3-container w3-quarter">
+            <p id="hitscore">Average Hit Score: 0</p>
+            <p id="highavgscore">Highest AHS: 0</p>
+            <p id="highscore">Fastest Time: 0</p>
+            <p id="misses">Misses: 0</p>
+            <p id="username">Username: Tommy1</p>
+        </div>
     </div>
-    </div>
+</div>
 </html>
