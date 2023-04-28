@@ -32,7 +32,13 @@
 // Save name & email into the form
 // ENSURE THE OBJECT NAME IS CORRECT; its currently details           //<=======
 
-
+function reg_popUp() {
+  fb_initialise();
+  userDetails = JSON.parse(sessionStorage.getItem("userDetails"));
+  console.log(userDetails);
+  document.getElementById("p_regName").innerHTML = userDetails.name;        //<=======    
+  document.getElementById("p_regEmail").innerHTML = userDetails.email;       //<=======  
+}
 /**************************************************************/
 // reg_regDetailsEntered()
 // Input event; called when user clicks ?????????? button               //<========

@@ -11,14 +11,8 @@ var cnv;
 
 //popball
 function game_enterGame(chosenGame) {
-	document.getElementById('landingPage').style.display = "none";
-	document.getElementById('gamePage').style.display = "block";
-
-	let element = document.getElementById("game_canvasDiv");
-	resizeCanvas(element.offsetWidth, element.offsetHeight);
-	whatGame = chosenGame;
-
-	HTML_editGameInfo(chosenGame);
+	sessionStorage.setItem("chosenGame", chosenGame);
+	window.location.replace('pages/gamePage.html');
 }
 
 
@@ -44,14 +38,6 @@ amount of "draws" per second controlled by frame rate (defaulted to 60). to be l
 function draw() {
 	if (whatGame == "PTB") {
 		background(0);
-		document.getElementById("gameTimer").innerHTML = `Time: ${PTB_time}.${PTB_ms}s`; //timer text
-		document.getElementById("misses").innerHTML = "Misses: " + PTB_misses;
-		for (var i = 0; i < ballarray.length; i++) {
-			//ball functions
-			ballarray[i].display();
-			ballarray[i].move();
-			ballarray[i].bounce();
-		}
 	} else if (whatGame == "TTT") {
 		let element = document.getElementById("game_canvasDiv")
 		background(0)
