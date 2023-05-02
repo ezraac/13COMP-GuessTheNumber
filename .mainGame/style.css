@@ -59,7 +59,6 @@ canvas {
 }
 
 #game_canvasDiv {
-  background-color: pink;
   height: 70vh;
   width: 60vw;
   position: absolute;

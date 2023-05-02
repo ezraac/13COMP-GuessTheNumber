@@ -8,6 +8,10 @@ function HTML_login() {
 }
 
 window.onload = function () {
+
+    if (window.location.pathname.split("/").pop() == "gamePage.html") {
+        
+    }
     
     // REG PAGE ONLOAD
     if (window.location.pathname.split("/").pop() == "regPage.html") {
