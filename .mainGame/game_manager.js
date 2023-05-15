@@ -23,11 +23,11 @@ default function called automatically by p5.js
 creates a canvas and sets the parent to div "game_canvasDiv" and positions it over that same div.
 */
 function setup() {
-	let element = document.getElementById("game_canvasDiv")
-	cnv = createCanvas(element.offsetWidth, element.offsetHeight); //sets width and height to same as div
-	cnv.parent("game_canvasDiv");
-	whatGame = sessionStorage.getItem("chosenGame");
-	game_gameStart()
+	// let element = document.getElementById("game_canvasDiv")
+	// cnv = createCanvas(element.offsetWidth, element.offsetHeight); //sets width and height to same as div
+	// cnv.parent("game_canvasDiv");
+	// whatGame = sessionStorage.getItem("chosenGame");
+	// game_gameStart()
 }
 
 /*

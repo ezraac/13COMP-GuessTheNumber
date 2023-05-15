@@ -9,8 +9,10 @@ function HTML_login() {
 
 window.onload = function () {
 
+    fb_initialise();
+
     if (window.location.pathname.split("/").pop() == "gamePage.html") {
-        
+        fb_readOn(LOBBY, null, lobbyArray, fb_processReadOn)
     }
     
     // REG PAGE ONLOAD

@@ -36,7 +36,7 @@ canvas {
 
 /*------------------------------------------------------------*
     LANDING page styling
-  /*------------------------------------------------------------*/
+/*------------------------------------------------------------*/
 #lP_oneThird {
   height: 80vh;
   border-radius: 20px;
@@ -46,16 +46,11 @@ canvas {
   height: 80vh;
 }
 
-/*game page css*/
-#game_oneThird {
-  height: 80vh;
-  /* border-radius: 20px 0px 0px 20px; */
-  background-color: rgb(51, 51, 51);
-}
-
-#game_twoThird {
-  height: 80vh;
-  background-color: rgb(51, 51, 51);
+/*------------------------------------------------------------*
+    Game page styling
+/*------------------------------------------------------------*/
+#s_table {
+  height: 95vh;
 }
 
 #game_canvasDiv {
@@ -66,43 +61,6 @@ canvas {
   top: 50%;
 
   transform: translate(-50%, -50%);
-}
-
-/*text div css*/
-#game_textDiv {
-  background-color: rgb(92, 92, 92);
-  border-radius: 20px;
-  font-size: larger;
-  width: 20vw;
-  height: 65vh;
-}
-
-#game_textDivRight {
-  background-color: rgb(92, 92, 92);
-  border-radius: 20px;
-  font-size: larger;
-  width: 20vw;
-  height: 65vh;
-}
-
-#game_timeDiv {
-  background-color: rgb(24, 230, 72);
-  border-radius: 20px;
-  width: 10vw;
-}
-
-#game_startButton {
-  margin-top: 20px;
-  background-color: rgb(24, 230, 72);
-  color: white;
-  border-radius: 20px;
-}
-
-#game_loginButton {
-  margin-top: 20px;
-  background-color: rgb(24, 230, 72);
-  color: white;
-  border-radius: 20px;
 }
 
 /*------------------------------------------------------------*

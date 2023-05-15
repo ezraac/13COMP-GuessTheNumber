@@ -6,6 +6,7 @@
 const DBPATH = "userInformation";
 const GAMEPATH = "userGameData";
 const AUTHPATH = "authorizedUsers";
+const LOBBY = "activeLobbies";
 
 var loginStatus = ' ';
 var readStatus = ' ';
@@ -30,9 +31,21 @@ var userGameData = {
   gameName: '',
   TTT_Wins: 0,
   TTT_Losses: 0,
+  GTN_Wins: 0,
+  GTN_Losses: 0,
+  GTN_draws: 0,
 }
 
 var dbArray = [];
+var lobbyArray = [
+  Bvn4WyC553aWhl3py3dp9lwg8Xx1 = {
+    gameName: "ezraa",
+    GTN_Wins: 0,
+    GTN_Losses: 0,
+    GTN_Draws: 0,
+    UID: "Bvn4WyC553aWhl3py3dp9lwg8Xx1",
+  }
+]
 /*****************************************************/
 
 /*****************************************************/

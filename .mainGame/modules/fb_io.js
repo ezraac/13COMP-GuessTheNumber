@@ -137,14 +137,14 @@ function fb_readAll(_path, _data, _processAll) {
             var dbKeys = Object.keys(dbData)
 
             //_processall in parameter
-            _processAll(readStatus, snapshot, _data, dbKeys)
+            _processAll(snapshot, _data, dbKeys, _path)
         }
     }
 
     function readErr(error) {
         readData = "fail"
         console.log(error)
-        _processAll(readStatus, _data, dbData, dbKeys)
+        _processAll(_data, dbData, dbKeys)
     }
 }
 
@@ -154,7 +154,7 @@ function fb_readAll(_path, _data, _processAll) {
 // Input:  path & key of record to read and where to save it
 // Return:  
 /*****************************************************/
-function fb_readRec(_path, _key, _data, _processData) {
+function fb_readRec(_path, _key, _data, _processData, _gameRead) {
     console.log('fb_readRec: path= ' + _path + '  key= ' + _key);
 
     readStatus = "waiting"
@@ -169,7 +169,11 @@ function fb_readRec(_path, _key, _data, _processData) {
         }
         else {
             readStatus = "ok"
-            _processData(dbData, _data)
+            if (_path == GAMEPATH) {
+                _processData(dbData, _data, _gameRead);
+            } else {
+                _processData(dbData, _data);
+            }
         }
     }
 
@@ -202,7 +206,7 @@ function fb_processUserDetails(_dbData, _data) {
         userDetails.sex = _dbData.sex
         userDetails.age = _dbData.age
 
-        fb_readRec(GAMEPATH, _dbData.uid, userDetails, fb_processGameData); //reads user game data
+        fb_readRec(GAMEPATH, _dbData.uid, userDetails, fb_processGameData, "all"); //reads user game data
     }
 }
 
@@ -219,7 +223,7 @@ function fb_processAuthRole(_dbData, _data) {
         fb_writeRec(AUTHPATH, userDetails.uid, 1);
     } else {
         _data.userAuthRole = _dbData;
-        HTML_updateHTMLFromPerms();
+       // HTML_updateHTMLFromPerms();
     }
 }
 
@@ -230,35 +234,45 @@ if userdetails exists then game data has to exist
 puts data in userGameData variable (data.js)
 calls function to load page
 */
-function fb_processGameData(_dbData, _data) {
-    userGameData.gameName = _dbData.gameName
-    userGameData.PTB_timeRec = _dbData.PTB_timeRec
-    userGameData.PTB_avgScore = _dbData.PTB_avgScore
-    userGameData.TTT_Wins = _dbData.TTT_Wins
-    userGameData.TTT_Losses = _dbData.TTT_Losses
+function fb_processGameData(_dbData, _data, _game) {
+    if (_game == "all") {
+        userGameData.gameName = _dbData.gameName
+        userGameData.PTB_timeRec = _dbData.PTB_timeRec
+        userGameData.PTB_avgScore = _dbData.PTB_avgScore
+        userGameData.TTT_Wins = _dbData.TTT_Wins
+        userGameData.TTT_Losses = _dbData.TTT_Losses
+        userGameData.GTN_wins = _dbData.GTN_wins
+        userGameData.GTN_losses = _dbData.GTN_losses
+        userGameData.GTN_draws = _dbData.GTN_draws
+    }
 
-    HTML_loadPage();
     console.log("finished processing data")
+    HTML_loadPage();
 }
 
 /*
-fb_processAll(_result, _dbData, _data, dbKeys)
+fb_processAll(_dbData, _data, dbKeys)
 processes all data
 iterates through dbkeys and adds data in _data
 data is a whole persons data depending on path read
 */
-function fb_processAll(_result, _dbData, _data, dbKeys) {
+function fb_processAll(_dbData, _data, dbKeys, _path) {
     console.log(_data)
-    for (i = 0; i < dbKeys.length; i++) {
-        let key = dbKeys[i]
-        _data.push({
-            name: _dbData[key].name,
-            highscore: _dbData[key].highscore
-        })
+    if (_path == GAMEPATH) {
+        for (i = 0; i < dbKeys.length; i++) {
+            let key = dbKeys[i]
+            _data.push({
+                gameName: _dbData[key].gameName,
+                GTN_Wins: _dbData[key].GTN_Wins,
+                GTN_Losses: _dbData[key].GTN_Losses,
+                GTN_Draws: _dbData[key].GTN_Draws,
+                UID: _dbData[key].uid,
+            })
+        }
     }
 }
 
-function fb_processReadOn(_dbData, _data) {
+function fb_processReadOn(_dbData, _data, _path) {
     //console.log("processing data")
     //console.log(_dbData)
     //if no data in db
@@ -268,6 +282,10 @@ function fb_processReadOn(_dbData, _data) {
         //reg_popUp(userDetails);
         //document.getElementById("loadingText").style.display = "none";
     } else {
+
+        if (_path == LOBBY) {
+            console.log(_dbData);
+        }
         userDetails.uid = _dbData.uid
         userDetails.name = _dbData.name
         userDetails.email = _dbData.email
@@ -284,7 +302,12 @@ function fb_readOn(_path, _key, _data, _processData) {
     //console.log('fb_readRec: path= ' + _path + '  key= ' + _key);
 
     readStatus = "waiting"
-    firebase.database().ref(`${_path}/${_key}`).on("value", gotRecord, readErr)
+    if (_path == LOBBY) {
+        firebase.database().ref(`${_path}`).on("value", gotRecord, readErr);
+    } else if (_path == DBPATH) {
+        firebase.database().ref(`${_path}/${_key}`).on("value", gotRecord, readErr);
+    }
+
 
     function gotRecord(snapshot) {
         let dbData = snapshot.val()
@@ -295,7 +318,7 @@ function fb_readOn(_path, _key, _data, _processData) {
         }
         else {
             readStatus = "ok"
-            _processData(dbData, _data)
+            _processData(dbData, _data, _path)
         }
     }
 
