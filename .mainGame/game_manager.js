@@ -1,6 +1,6 @@
 /****************************************************/
 // code to manage what game is shown in the p5 canvas
-// written by Ezra 2022
+// written by Ezra 2023
 /****************************************************/
 var whatGame;
 var pBInterval; //asigned an interval

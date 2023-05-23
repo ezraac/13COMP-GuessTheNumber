@@ -37,15 +37,8 @@ var userGameData = {
 }
 
 var dbArray = [];
-var lobbyArray = [
-  Bvn4WyC553aWhl3py3dp9lwg8Xx1 = {
-    gameName: "ezraa",
-    GTN_Wins: 0,
-    GTN_Losses: 0,
-    GTN_Draws: 0,
-    UID: "Bvn4WyC553aWhl3py3dp9lwg8Xx1",
-  }
-]
+
+var lobbyArray = []
 /*****************************************************/
 
 /*****************************************************/

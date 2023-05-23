@@ -74,17 +74,17 @@ function fb_login(_dataRec, permissions) {
                 console.log('fb_login: status = ' + loginStatus);
                 fb_writeRec(AUTHPATH, _dataRec.uid, 1);
             })
-                // Catch errors
-                .catch(function (error) {
-                    if (error) {
-                        var errorCode = error.code;
-                        var errorMessage = error.message;
-                        loginStatus = 'error: ' + error.code;
-                        console.log('fb_login: error code = ' + errorCode + '    ' + errorMessage);
+            // Catch errors
+            .catch(function (error) {
+                if (error) {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    loginStatus = 'error: ' + error.code;
+                    console.log('fb_login: error code = ' + errorCode + '    ' + errorMessage);
 
-                        alert(error);
-                    }
-                });
+                    alert(error);
+                }
+            });
         }
     }
 }
@@ -154,11 +154,15 @@ function fb_readAll(_path, _data, _processAll) {
 // Input:  path & key of record to read and where to save it
 // Return:  
 /*****************************************************/
-function fb_readRec(_path, _key, _data, _processData, _gameRead) {
+function fb_readRec(_path, _key, _data, _processData, _readExtraVar) {
     console.log('fb_readRec: path= ' + _path + '  key= ' + _key);
 
     readStatus = "waiting"
-    firebase.database().ref(`${_path}/${_key}`).once("value", gotRecord, readErr)
+    if (_path == LOBBY) {
+        firebase.database().ref(`${_path}`).once("value", gotRecord, readErr)
+    } else {
+        firebase.database().ref(`${_path}/${_key}`).once("value", gotRecord, readErr)
+    }
 
     function gotRecord(snapshot) {
         let dbData = snapshot.val()
@@ -170,7 +174,9 @@ function fb_readRec(_path, _key, _data, _processData, _gameRead) {
         else {
             readStatus = "ok"
             if (_path == GAMEPATH) {
-                _processData(dbData, _data, _gameRead);
+                _processData(dbData, _data, _readExtraVar);
+           // } else if (_path == LOBBY) {
+               // _processData(dbData, _data);
             } else {
                 _processData(dbData, _data);
             }
@@ -224,7 +230,7 @@ function fb_processAuthRole(_dbData, _data) {
     } else {
         _data.userAuthRole = _dbData;
        // HTML_updateHTMLFromPerms();
-    }
+    } 
 }
 
 /*
@@ -248,6 +254,27 @@ function fb_processGameData(_dbData, _data, _game) {
 
     console.log("finished processing data")
     HTML_loadPage();
+}
+
+
+
+function fb_processLobbyData(_dbData, _data) {
+    console.log(_dbData, _data);
+    if (_dbData) {
+        _data = _dbData
+        console.log(_data)
+    } else {
+        _data = [
+            userDetails.uid = {
+                gameName: userGameData.gameName,
+                GTN_Wins: userGameData.GTN_Wins,
+                GTN_Losses: userGameData.GTN_Losses,
+                GTN_Draws: userGameData.GTN_Draws,
+                UID: userDetails.uid,
+            }            
+        ]
+        console.log(_data)
+    }
 }
 
 /*

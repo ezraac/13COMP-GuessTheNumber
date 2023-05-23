@@ -3,7 +3,7 @@
 //
 // Test registration page
 // Written by Mr Bob 2020
-// Tailored by Ezra 2022
+// Tailored by Ezra 2023
 // v01 Initial code
 // v02 Include reg_getFormItemValue function in reg_manager.js 
 // v03 Add reg_prep function
@@ -66,10 +66,6 @@ function reg_regDetailsEntered() {
     if (document.getElementById('f_reg').checkValidity()) {
       fb_writeRec(DBPATH, userDetails.uid, userDetails, "reg"); //<=======
       fb_writeRec(GAMEPATH, userDetails.uid, userGameData);
-      //window.location.replace("../index.html")
-      // document.getElementById("username").innerHTML = `Username: ${userGameData.gameName}`;
-      // document.getElementById("landingPage").style.display = "block";
-      // document.getElementById("registrationPage").style.display = "none";
     }
   }
   // Only write record to DB if all the fom's input passed html validation

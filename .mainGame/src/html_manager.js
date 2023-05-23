@@ -1,18 +1,16 @@
 /*****************************************************/
 // html_manager.js
-// written by Ezra 2022
+// written by Ezra 2023
 /*****************************************************/
-function HTML_login() {
-    fb_initialise()
-    db_login()
-}
-
 window.onload = function () {
 
     fb_initialise();
+    db_login();
 
     if (window.location.pathname.split("/").pop() == "gamePage.html") {
-        fb_readOn(LOBBY, null, lobbyArray, fb_processReadOn)
+        fb_readRec(LOBBY, null, lobbyArray, fb_processLobbyData);
+        fb_readOn(LOBBY, null, lobbyArray, fb_processReadOn);
+    
     }
     
     // REG PAGE ONLOAD
@@ -100,8 +98,8 @@ function HTML_editGameInfo(game) {
 // removes login button and shows landing page
 /*****************************************************/
 function HTML_loadPage() {
-   document.getElementById("landingPage").style.display = "block";
-    document.getElementById("lP_login").style.display = "none";
+    document.getElementById("landingPage").style.display = "block";
+    document.getElementById("lP_loadingText").style.display = "none";
 }
 
 /*****************************************************/
