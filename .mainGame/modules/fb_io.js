@@ -179,6 +179,7 @@ function fb_readRec(_path, _key, _data, _processData, _readExtraVar) {
                // _processData(dbData, _data);
             } else {
                 _processData(dbData, _data);
+                console.log(_data)
             }
         }
     }
@@ -259,21 +260,20 @@ function fb_processGameData(_dbData, _data, _game) {
 
 
 function fb_processLobbyData(_dbData, _data) {
-    console.log(_dbData, _data);
-    if (_dbData) {
-        _data = _dbData
-        console.log(_data)
-    } else {
-        _data = [
-            userDetails.uid = {
-                gameName: userGameData.gameName,
-                GTN_Wins: userGameData.GTN_Wins,
-                GTN_Losses: userGameData.GTN_Losses,
-                GTN_Draws: userGameData.GTN_Draws,
-                UID: userDetails.uid,
-            }            
-        ]
-        console.log(_data)
+    if (_data == lobbyArray) { //_data bug fix
+        if (_dbData) {
+            lobbyArray = Object.values(_dbData)
+        } else {
+            _data = [
+                userDetails.uid = {
+                    gameName: userGameData.gameName,
+                    GTN_Wins: userGameData.GTN_Wins,
+                    GTN_Losses: userGameData.GTN_Losses,
+                    GTN_Draws: userGameData.GTN_Draws,
+                    UID: userDetails.uid,
+                }            
+            ]
+        }
     }
 }
 

@@ -85,12 +85,13 @@ function html_buildTableFunc(_tableBodyID, _array) {
   // Loop thu array; build row & add it to table
   for (i = 0; i < _array.length; i++) {
     // Back ticks define a temperate literal
+    var player = Object.values(_array[i])
     var row = `<tr>  
-                <td>${_array[i].gameName}</td>
-                <td class="w3-center">${_array[i].GTN_Wins}</td>
-                <td class="w3-center">${_array[i].GTN_Draws}</td>
-                <td class="w3-center">${_array[i].GTN_Losses}</td>
-                <td>${_array[i].UID}</td>
+                <td>${player[i].gameName}</td>
+                <td class="w3-center">${player[i].GTN_Wins}</td>
+                <td class="w3-center">${player[i].GTN_Draws}</td>
+                <td class="w3-center">${player[i].GTN_Losses}</td>
+                <td>${player[i].UID}</td>
                 <td><button class="b_join">Join</button></td>
               </tr>`
     html_table.innerHTML += row;
