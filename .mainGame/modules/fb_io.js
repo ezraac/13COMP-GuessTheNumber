@@ -74,17 +74,17 @@ function fb_login(_dataRec, permissions) {
                 console.log('fb_login: status = ' + loginStatus);
                 fb_writeRec(AUTHPATH, _dataRec.uid, 1);
             })
-            // Catch errors
-            .catch(function (error) {
-                if (error) {
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    loginStatus = 'error: ' + error.code;
-                    console.log('fb_login: error code = ' + errorCode + '    ' + errorMessage);
+                // Catch errors
+                .catch(function (error) {
+                    if (error) {
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        loginStatus = 'error: ' + error.code;
+                        console.log('fb_login: error code = ' + errorCode + '    ' + errorMessage);
 
-                    alert(error);
-                }
-            });
+                        alert(error);
+                    }
+                });
         }
     }
 }
@@ -137,7 +137,7 @@ function fb_readAll(_path, _data, _processAll) {
             var dbKeys = Object.keys(dbData)
 
             //_processall in parameter
-            _processAll(snapshot, _data, dbKeys, _path)
+            _processAll(dbData, _data, dbKeys, _path)
         }
     }
 
@@ -166,17 +166,17 @@ function fb_readRec(_path, _key, _data, _processData, _readExtraVar) {
 
     function gotRecord(snapshot) {
         let dbData = snapshot.val()
-        //console.log(dbData)
+        console.log(dbData)
         if (dbData == null) {
             readStatus = "no record"
-            _processData(dbData)
+            _processData(dbData, _data)
         }
         else {
             readStatus = "ok"
             if (_path == GAMEPATH) {
                 _processData(dbData, _data, _readExtraVar);
-           // } else if (_path == LOBBY) {
-               // _processData(dbData, _data);
+                // } else if (_path == LOBBY) {
+                // _processData(dbData, _data);
             } else {
                 _processData(dbData, _data);
                 console.log(_data)
@@ -230,8 +230,8 @@ function fb_processAuthRole(_dbData, _data) {
         fb_writeRec(AUTHPATH, userDetails.uid, 1);
     } else {
         _data.userAuthRole = _dbData;
-       // HTML_updateHTMLFromPerms();
-    } 
+        // HTML_updateHTMLFromPerms();
+    }
 }
 
 /*
@@ -248,33 +248,35 @@ function fb_processGameData(_dbData, _data, _game) {
         userGameData.PTB_avgScore = _dbData.PTB_avgScore
         userGameData.TTT_Wins = _dbData.TTT_Wins
         userGameData.TTT_Losses = _dbData.TTT_Losses
-        userGameData.GTN_wins = _dbData.GTN_wins
-        userGameData.GTN_losses = _dbData.GTN_losses
-        userGameData.GTN_draws = _dbData.GTN_draws
+        userGameData.GTN_Wins = _dbData.GTN_Wins
+        userGameData.GTN_Losses = _dbData.GTN_Losses
+        userGameData.GTN_Draws = _dbData.GTN_Draws
     }
 
-    console.log("finished processing data")
-    HTML_loadPage();
+    if (HTML_checkPage() == "index.html") {
+        HTML_loadPage();
+    } else if (HTML_checkPage() == "gamePage.html") {
+        fb_processPlayerCreateLobby()
+    }
 }
 
 
-
-function fb_processLobbyData(_dbData, _data) {
-    if (_data == lobbyArray) { //_data bug fix
-        if (_dbData) {
-            lobbyArray = Object.values(_dbData)
-        } else {
-            _data = [
-                userDetails.uid = {
-                    gameName: userGameData.gameName,
-                    GTN_Wins: userGameData.GTN_Wins,
-                    GTN_Losses: userGameData.GTN_Losses,
-                    GTN_Draws: userGameData.GTN_Draws,
-                    UID: userDetails.uid,
-                }            
-            ]
+/*
+fb_processPlayerCreateLobby()
+called after logging in automatically from gamePage.html
+processes the user game data into lobby array
+meant to allow the player to build a lobby
+*/
+function fb_processPlayerCreateLobby() {
+    clientCreateLobby = [
+        userDetails.uid = {
+            gameName: userGameData.gameName,
+            GTN_Wins: userGameData.GTN_Wins,
+            GTN_Losses: userGameData.GTN_Losses,
+            GTN_Draws: userGameData.GTN_Draws,
+            UID: userDetails.uid,
         }
-    }
+    ]
 }
 
 /*
@@ -284,16 +286,27 @@ iterates through dbkeys and adds data in _data
 data is a whole persons data depending on path read
 */
 function fb_processAll(_dbData, _data, dbKeys, _path) {
-    console.log(_data)
-    if (_path == GAMEPATH) {
+    console.log(_data, _dbData)
+    if (_path == LOBBY) {
         for (i = 0; i < dbKeys.length; i++) {
             let key = dbKeys[i]
+            console.log(_dbData[key])
             _data.push({
                 gameName: _dbData[key].gameName,
                 GTN_Wins: _dbData[key].GTN_Wins,
                 GTN_Losses: _dbData[key].GTN_Losses,
                 GTN_Draws: _dbData[key].GTN_Draws,
-                UID: _dbData[key].uid,
+                UID: _dbData[key].UID,
+            })
+
+            html_buildTableFunc("tb_userDetails", _data)
+        }
+    } else if (_path == GAMEPATH) {
+        for (i = 0; i < dbKeys.length; i++) {
+            let key = dbKeys[i]
+            _data.push({
+                gameName: _dbData[key].gameName,
+
             })
         }
     }

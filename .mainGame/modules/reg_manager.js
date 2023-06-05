@@ -33,7 +33,6 @@
 // ENSURE THE OBJECT NAME IS CORRECT; its currently details           //<=======
 
 function reg_popUp() {
-  fb_initialise();
   userDetails = JSON.parse(sessionStorage.getItem("userDetails"));
   console.log(userDetails);
   document.getElementById("p_regName").innerHTML = userDetails.name;        //<=======    

@@ -32,7 +32,7 @@ function html_getData() {
 function html_build() {
   console.log("html_build: ");
 
-  html_buildTableFunc("tb_userDetails", lobbyArray);
+  html_buildTableFunc("tb_userDetails", clientCreateLobby);
 }
 
 /******************************************************/
@@ -81,20 +81,24 @@ function html_buildTableFunc(_tableBodyID, _array) {
 
   // Get all the info on the table
   var html_table = document.getElementById(_tableBodyID);
+    
 
   // Loop thu array; build row & add it to table
   for (i = 0; i < _array.length; i++) {
     // Back ticks define a temperate literal
     var player = Object.values(_array[i])
+    console.log(player)
+    //player[0] = game name //player[1] = gtn wins //player[2] = gtn draws //player[3] = gtn losses //player[4] uid
     var row = `<tr>  
-                <td>${player[i].gameName}</td>
-                <td class="w3-center">${player[i].GTN_Wins}</td>
-                <td class="w3-center">${player[i].GTN_Draws}</td>
-                <td class="w3-center">${player[i].GTN_Losses}</td>
-                <td>${player[i].UID}</td>
+                <td>${player[0]}</td>
+                <td class="w3-center">${player[1]}</td>
+                <td class="w3-center">${player[2]}</td>
+                <td class="w3-center">${player[3]}</td>
+                <td>${player[4]}</td>
                 <td><button class="b_join">Join</button></td>
               </tr>`
     html_table.innerHTML += row;
+    var lobbyWrite = _array[0]
   }
 
   /*--------------------------------------------------*/

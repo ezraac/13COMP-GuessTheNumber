@@ -33,11 +33,12 @@ var userGameData = {
   TTT_Losses: 0,
   GTN_Wins: 0,
   GTN_Losses: 0,
-  GTN_draws: 0,
+  GTN_Draws: 0,
 }
 
 var dbArray = [];
 
+var clientCreateLobby = []
 var lobbyArray = [];
 /*****************************************************/
 

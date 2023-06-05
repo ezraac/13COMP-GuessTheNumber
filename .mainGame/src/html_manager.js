@@ -5,19 +5,26 @@
 window.onload = function () {
 
     fb_initialise();
-    db_login();
 
-    if (window.location.pathname.split("/").pop() == "gamePage.html") {
-        fb_readRec(LOBBY, null, lobbyArray, fb_processLobbyData);
+    if (HTML_checkPage() != "regPage.html") {
+        db_login();
+    }
+
+    if (HTML_checkPage() == "gamePage.html") {
         fb_readOn(LOBBY, null, lobbyArray, fb_processReadOn);
-    
     }
     
     // REG PAGE ONLOAD
-    if (window.location.pathname.split("/").pop() == "regPage.html") {
+    if (HTML_checkPage() == "regPage.html") {
         reg_popUp();
     }
   }
+
+
+function HTML_checkPage() {
+    var page = window.location.pathname.split("/").pop()
+    return page;
+}
 /*****************************************************/
 // HTML_updateHTMLFromPerms();
 // called by firebase.js in fb_processAuthRole();
@@ -98,8 +105,10 @@ function HTML_editGameInfo(game) {
 // removes login button and shows landing page
 /*****************************************************/
 function HTML_loadPage() {
-    document.getElementById("landingPage").style.display = "block";
-    document.getElementById("lP_loadingText").style.display = "none";
+    if (window.location.pathname.split("/").pop() == "index.html") {
+        document.getElementById("landingPage").style.display = "block";
+        document.getElementById("lP_loadingText").style.display = "none";
+    }
 }
 
 /*****************************************************/
