@@ -33,6 +33,7 @@ function html_build() {
   console.log("html_build: ");
 
   html_buildTableFunc("tb_userDetails", clientCreateLobby);
+  fb_writeRec(`${LOBBY}/LOBBY: ${userDetails.uid}`, userDetails.uid, clientCreateLobby[0])
 }
 
 /******************************************************/
@@ -82,10 +83,10 @@ function html_buildTableFunc(_tableBodyID, _array) {
   // Get all the info on the table
   var html_table = document.getElementById(_tableBodyID);
     
-
   // Loop thu array; build row & add it to table
   for (i = 0; i < _array.length; i++) {
     // Back ticks define a temperate literal
+    console.log(_array[i])
     var player = Object.values(_array[i])
     console.log(player)
     //player[0] = game name //player[1] = gtn wins //player[2] = gtn draws //player[3] = gtn losses //player[4] uid
@@ -115,6 +116,7 @@ function html_buildTableFunc(_tableBodyID, _array) {
       // get current row's 1st TD value
       var col4 = currentRow.find("td:eq(4)").text();
       console.log("html_buildTableFunc: uid = " + col4);
+      fb_writeRec(`${LOBBY}/LOBBY: ${col4}`, userDetails.uid, clientCreateLobby[0])
     });
   });
 }

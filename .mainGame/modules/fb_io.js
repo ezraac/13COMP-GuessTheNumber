@@ -96,7 +96,7 @@ function fb_login(_dataRec, permissions) {
 // Return: 
 /*****************************************************/
 function fb_writeRec(_path, _key, _data, _location) {
-    console.log(`fb_WriteRec: path= ${_path} key= ${_key} data= ${_data.name}`);
+    console.log(`fb_WriteRec: path= ${_path} key= ${_key}`);
     writeStatus = "waiting"
     firebase.database().ref(_path + "/" + _key).set(_data, function (error) {
         if (error) {
@@ -267,9 +267,11 @@ called after logging in automatically from gamePage.html
 processes the user game data into lobby array
 meant to allow the player to build a lobby
 */
+
+
 function fb_processPlayerCreateLobby() {
     clientCreateLobby = [
-        userDetails.uid = {
+         clientCreateLobby[userDetails.uid] = {
             gameName: userGameData.gameName,
             GTN_Wins: userGameData.GTN_Wins,
             GTN_Losses: userGameData.GTN_Losses,
@@ -290,13 +292,14 @@ function fb_processAll(_dbData, _data, dbKeys, _path) {
     if (_path == LOBBY) {
         for (i = 0; i < dbKeys.length; i++) {
             let key = dbKeys[i]
-            console.log(_dbData[key])
+            let user = Object.values(_dbData[key])
+            
             _data.push({
-                gameName: _dbData[key].gameName,
-                GTN_Wins: _dbData[key].GTN_Wins,
-                GTN_Losses: _dbData[key].GTN_Losses,
-                GTN_Draws: _dbData[key].GTN_Draws,
-                UID: _dbData[key].UID,
+                gameName: user[0].gameName,
+                GTN_Wins: user[0].GTN_Wins,
+                GTN_Losses: user[0].GTN_Losses,
+                GTN_Draws: user[0].GTN_Draws,
+                UID: user[0].UID,
             })
 
             html_buildTableFunc("tb_userDetails", _data)
