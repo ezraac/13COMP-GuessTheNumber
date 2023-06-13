@@ -40,6 +40,7 @@ var dbArray = [];
 
 var clientCreateLobby = []
 var lobbyArray = [];
+var playerTwoDetails = []
 /*****************************************************/
 
 /*****************************************************/

@@ -157,6 +157,7 @@ function fb_readAll(_path, _data, _processAll) {
 function fb_readRec(_path, _key, _data, _processData, _readExtraVar) {
     console.log('fb_readRec: path= ' + _path + '  key= ' + _key);
 
+
     readStatus = "waiting"
     if (_path == LOBBY) {
         firebase.database().ref(`${_path}`).once("value", gotRecord, readErr)
@@ -328,13 +329,24 @@ function fb_processReadOn(_dbData, _data, _path) {
 
         if (_path == LOBBY) {
             console.log(_dbData);
+            var playerData = Object.values(_dbData);
+            playerData.forEach(player => {
+                for (let key in player) {
+                    if (key != userDetails.uid) {
+                        playerTwoDetails = player[key];
+                    }
+                }
+            })
+
+            console.log(playerData)
+        } else {
+            userDetails.uid = _dbData.uid
+            userDetails.name = _dbData.name
+            userDetails.email = _dbData.email
+            userDetails.photoURL = _dbData.photoURL
+            userDetails.sex = _dbData.sex
+            userDetails.age = _dbData.age
         }
-        userDetails.uid = _dbData.uid
-        userDetails.name = _dbData.name
-        userDetails.email = _dbData.email
-        userDetails.photoURL = _dbData.photoURL
-        userDetails.sex = _dbData.sex
-        userDetails.age = _dbData.age
 
 
         //fb_readRec(GAMEPATH, _dbData.uid, userDetails, fb_processGameData); //reads user game data
@@ -369,6 +381,14 @@ function fb_readOn(_path, _key, _data, _processData) {
         readStatus = "fail"
         //console.log(error)
     }
+}
+
+
+
+
+
+function fb_onDisconnect() {
+
 }
 /*****************************************************/
 //    END OF MODULE
