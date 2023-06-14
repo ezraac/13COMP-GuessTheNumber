@@ -120,3 +120,9 @@ function HTML_returnPage() {
     //document.getElementById("landingPage").style.display = "block";
     //document.getElementById("gamePage").style.display = "none";
 }
+
+
+function HTML_loadMultiGame() {
+    document.getElementById("s_table").display = "none";
+    
+}

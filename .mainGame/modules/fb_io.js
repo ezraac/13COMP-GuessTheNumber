@@ -271,15 +271,14 @@ meant to allow the player to build a lobby
 
 
 function fb_processPlayerCreateLobby() {
-    clientCreateLobby = [
-         clientCreateLobby[userDetails.uid] = {
-            gameName: userGameData.gameName,
-            GTN_Wins: userGameData.GTN_Wins,
-            GTN_Losses: userGameData.GTN_Losses,
-            GTN_Draws: userGameData.GTN_Draws,
-            UID: userDetails.uid,
-        }
-    ]
+    clientCreateLobby = {
+        gameName: userGameData.gameName,
+        GTN_Wins: userGameData.GTN_Wins,
+        GTN_Losses: userGameData.GTN_Losses,
+        GTN_Draws: userGameData.GTN_Draws,
+        UID: userDetails.uid,
+        p2_Status: "offline",
+    }
 }
 
 /*
@@ -334,6 +333,12 @@ function fb_processReadOn(_dbData, _data, _path) {
                 for (let key in player) {
                     if (key != userDetails.uid) {
                         playerTwoDetails = player[key];
+                    } else if (key == userDetails.uid) {
+                        clientCreateLobby = player[key]
+
+                        if (clientCreateLobby.p2_Status == "online") {
+
+                        }
                     }
                 }
             })
@@ -384,7 +389,20 @@ function fb_readOn(_path, _key, _data, _processData) {
 }
 
 
-
+function fb_updateRec(_path, _key, _data) {
+    writeStatus = "waiting";
+    firebase.database().ref(_path + "/" + _key).update(_data, function (error) {
+        if (error) {
+            writeStatus = "failure"
+            console.log(error)
+        }
+        else {
+            writeStatus = "ok"
+            console.log(writeStatus)
+        }
+    });
+    console.log("fb_updaterec exit")
+}
 
 
 function fb_onDisconnect() {

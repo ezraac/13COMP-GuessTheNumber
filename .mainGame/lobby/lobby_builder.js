@@ -33,7 +33,10 @@ function html_build() {
   console.log("html_build: ");
 
   html_buildTableFunc("tb_userDetails", clientCreateLobby);
-  fb_writeRec(`${LOBBY}/LOBBY: ${userDetails.uid}`, userDetails.uid, clientCreateLobby[0])
+  if (typeof clientCreateLobby.p2_Status === "undefined" || clientCreateLobby.p2_Status === null) {
+    clientCreateLobby.p2_Status = "offline";
+  }
+  fb_writeRec(`${LOBBY}/LOBBY: ${userDetails.uid}`, userDetails.uid, clientCreateLobby)
 }
 
 /******************************************************/
@@ -88,7 +91,7 @@ function html_buildTableFunc(_tableBodyID, _array) {
     // Back ticks define a temperate literal
     console.log(_array[i])
     var player = Object.values(_array[i])
-    console.log(player)
+    //console.log(player)
     //player[0] = game name //player[1] = gtn wins //player[2] = gtn draws //player[3] = gtn losses //player[4] uid
     var row = `<tr>  
                 <td>${player[0]}</td>
@@ -116,7 +119,11 @@ function html_buildTableFunc(_tableBodyID, _array) {
       // get current row's 1st TD value
       var col4 = currentRow.find("td:eq(4)").text();
       console.log("html_buildTableFunc: uid = " + col4);
-      fb_writeRec(`${LOBBY}/LOBBY: ${col4}`, userDetails.uid, clientCreateLobby[0])
+      if (clientCreateLobby.p2_Status) {
+        delete clientCreateLobby.p2_Status;
+      }
+      fb_updateRec(`${LOBBY}/LOBBY: ${col4}`, col4, {p2_Status: "online"})
+      fb_writeRec(`${LOBBY}/LOBBY: ${col4}`, userDetails.uid, clientCreateLobby)
     });
   });
 }

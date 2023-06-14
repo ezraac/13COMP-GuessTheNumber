@@ -12,7 +12,7 @@ var cnv;
 //popball
 function game_enterGame(chosenGame) {
 	sessionStorage.setItem("chosenGame", chosenGame);
-	window.location.replace('pages/gamePage.html');
+	window.location.replace('gamePage.html');
 }
 
 
