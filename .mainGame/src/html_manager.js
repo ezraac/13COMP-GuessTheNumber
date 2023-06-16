@@ -123,6 +123,16 @@ function HTML_returnPage() {
 
 
 function HTML_loadMultiGame() {
-    document.getElementById("s_table").display = "none";
-    
+    document.getElementById("s_table").style.display = "none";
+    document.getElementById("gtn_game").style.display = "block";
+    var player = clientCreateLobby
+
+    var stats = `
+    <li>Username: ${player.gameName}</li>
+    <li>Wins: ${player.GTN_Wins}</li>
+    <li>Draws: ${player.GTN_Draws}</li>
+    <li>Losses: ${player.GTN_Losses}
+    `
+
+    document.getElementById(`p${player.player}_stats`).innerHTML = stats;
 }

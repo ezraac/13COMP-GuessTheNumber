@@ -271,14 +271,17 @@ meant to allow the player to build a lobby
 
 
 function fb_processPlayerCreateLobby() {
-    clientCreateLobby = {
-        gameName: userGameData.gameName,
-        GTN_Wins: userGameData.GTN_Wins,
-        GTN_Losses: userGameData.GTN_Losses,
-        GTN_Draws: userGameData.GTN_Draws,
-        UID: userDetails.uid,
-        p2_Status: "offline",
-    }
+    clientCreateLobby = [
+        clientCreateLobby[userDetails.uid] = {
+            gameName: userGameData.gameName,
+            GTN_Wins: userGameData.GTN_Wins,
+            GTN_Losses: userGameData.GTN_Losses,
+            GTN_Draws: userGameData.GTN_Draws,
+            UID: userDetails.uid,
+            player: 1,
+            p2_Status: "offline",
+        }
+    ]
 }
 
 /*
@@ -337,7 +340,7 @@ function fb_processReadOn(_dbData, _data, _path) {
                         clientCreateLobby = player[key]
 
                         if (clientCreateLobby.p2_Status == "online") {
-
+                            HTML_loadMultiGame();
                         }
                     }
                 }

@@ -34,9 +34,10 @@ function html_build() {
 
   html_buildTableFunc("tb_userDetails", clientCreateLobby);
   if (typeof clientCreateLobby.p2_Status === "undefined" || clientCreateLobby.p2_Status === null) {
-    clientCreateLobby.p2_Status = "offline";
+    clientCreateLobby[0].p2_Status = "offline";
   }
-  fb_writeRec(`${LOBBY}/LOBBY: ${userDetails.uid}`, userDetails.uid, clientCreateLobby)
+  clientCreateLobby[0].player = 1;
+  fb_writeRec(`${LOBBY}/LOBBY: ${userDetails.uid}`, userDetails.uid, clientCreateLobby[0])
 }
 
 /******************************************************/
@@ -119,11 +120,13 @@ function html_buildTableFunc(_tableBodyID, _array) {
       // get current row's 1st TD value
       var col4 = currentRow.find("td:eq(4)").text();
       console.log("html_buildTableFunc: uid = " + col4);
-      if (clientCreateLobby.p2_Status) {
-        delete clientCreateLobby.p2_Status;
+      if (clientCreateLobby[0].p2_Status) {
+        delete clientCreateLobby[0].p2_Status;
       }
+      clientCreateLobby[0].player = 2;
       fb_updateRec(`${LOBBY}/LOBBY: ${col4}`, col4, {p2_Status: "online"})
-      fb_writeRec(`${LOBBY}/LOBBY: ${col4}`, userDetails.uid, clientCreateLobby)
+      fb_writeRec(`${LOBBY}/LOBBY: ${col4}`, userDetails.uid, clientCreateLobby[0])
+      HTML_loadMultiGame(); //switch section from lobby to gtn
     });
   });
 }
