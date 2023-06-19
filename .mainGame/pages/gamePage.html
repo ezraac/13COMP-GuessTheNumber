@@ -54,7 +54,7 @@
       <!--game details for popBall-->
       <div class="w3-container w3-col l2">
 
-        <ul id="p1_stats">WAITING FOR PLAYER 1</ul>
+        <ul id="p1_stats" style="list-style-type: none;">WAITING FOR PLAYER 1</ul>
 
         <button class="w3-button w3-border w3-xlarge" onclick="window.location.replace('../index.html')"
           id="game_loginButton">RETURN</button>
@@ -117,14 +117,21 @@
 
 
         <section id="gtn_game" style="display: none;">
-          <label for="gtn_guess">guess a number</label>
-          <input type="number" name="gtn_guess" id="gtn_guess" value="value">
-          <input type="button" value="guess" onclick="gtn_guessNum()">
+          <div class="w3-half" style="background-color: #ededed;" id="p1_guess">
+            <label for="gtn_guess">your guess</label>
+            <input type="number" name="gtn_guess" id="gtn_guess" value="value">
+            <input type="button" value="guess" onclick="gtn_guessNum()">
+          </div>
+
+          <div class="w3-half" style="background-color: #ededed;" id="p2_guess">
+            <label for="gtn_guess">opponent's guess</label>
+            <input type="number" name="gtn_guess" id="gtn_guess" placeholder="WAITING FOR GUESS" disabled>
+          </div>
         </section>
       </div>
 
       <div class="w3-container w3-col l2">
-        <ul id="p2_stats">WAITING FOR PLAYER 2</ul>
+        <ul id="p2_stats" style="list-style-type: none;">WAITING FOR PLAYER 2</ul>
       </div>
     </div>
   </div>

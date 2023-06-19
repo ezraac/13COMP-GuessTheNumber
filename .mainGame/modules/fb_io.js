@@ -331,22 +331,7 @@ function fb_processReadOn(_dbData, _data, _path) {
 
         if (_path == LOBBY) {
             console.log(_dbData);
-            var playerData = Object.values(_dbData);
-            playerData.forEach(player => {
-                for (let key in player) {
-                    if (key != userDetails.uid) {
-                        playerTwoDetails = player[key];
-                    } else if (key == userDetails.uid) {
-                        clientCreateLobby = player[key]
-
-                        if (clientCreateLobby.p2_Status == "online") {
-                            HTML_loadMultiGame();
-                        }
-                    }
-                }
-            })
-
-            console.log(playerData)
+            db_lobbyOnReadSort(_dbData)
         } else {
             userDetails.uid = _dbData.uid
             userDetails.name = _dbData.name

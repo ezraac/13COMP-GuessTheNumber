@@ -12,6 +12,7 @@ window.onload = function () {
 
     if (HTML_checkPage() == "gamePage.html") {
         fb_readOn(LOBBY, null, lobbyArray, fb_processReadOn);
+        HTML_checkDisconnected();
     }
     
     // REG PAGE ONLOAD
@@ -125,7 +126,7 @@ function HTML_returnPage() {
 function HTML_loadMultiGame() {
     document.getElementById("s_table").style.display = "none";
     document.getElementById("gtn_game").style.display = "block";
-    var player = clientCreateLobby
+    var player = clientCreateLobby[0]
 
     var stats = `
     <li>Username: ${player.gameName}</li>
@@ -134,5 +135,18 @@ function HTML_loadMultiGame() {
     <li>Losses: ${player.GTN_Losses}
     `
 
+    var opponentStats = `
+    <li>Username: ${playerTwoDetails.gameName}</li>
+    <li>Wins: ${playerTwoDetails.GTN_Wins}</li>
+    <li>Draws: ${playerTwoDetails.GTN_Draws}</li>
+    <li>Losses: ${playerTwoDetails.GTN_Losses}
+    `
+
     document.getElementById(`p${player.player}_stats`).innerHTML = stats;
+    document.getElementById(`p${playerTwoDetails.player}_stats`).innerHTML = opponentStats;
+}
+
+
+function HTML_checkDisconnected() {
+    
 }

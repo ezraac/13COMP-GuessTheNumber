@@ -63,6 +63,19 @@ canvas {
   transform: translate(-50%, -50%);
 }
 
+#p1_guess {
+  height: 50%;
+  color: #2b2b2b;
+}
+
+#p2_guess {
+  color: #2b2b2b;
+  height: 50%;
+}
+
+::placeholder {
+  color: #2b2b2b;
+}
 /*------------------------------------------------------------*
     REGISTRATION page styling
   /*------------------------------------------------------------*/

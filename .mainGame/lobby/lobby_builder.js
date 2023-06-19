@@ -38,6 +38,7 @@ function html_build() {
   }
   clientCreateLobby[0].player = 1;
   fb_writeRec(`${LOBBY}/LOBBY: ${userDetails.uid}`, userDetails.uid, clientCreateLobby[0])
+  onlineLobby = `${LOBBY}/LOBBY: ${userDetails.uid}`
 }
 
 /******************************************************/
@@ -124,8 +125,10 @@ function html_buildTableFunc(_tableBodyID, _array) {
         delete clientCreateLobby[0].p2_Status;
       }
       clientCreateLobby[0].player = 2;
+      onlineLobby = `${LOBBY}/LOBBY: ${col4}`
       fb_updateRec(`${LOBBY}/LOBBY: ${col4}`, col4, {p2_Status: "online"})
       fb_writeRec(`${LOBBY}/LOBBY: ${col4}`, userDetails.uid, clientCreateLobby[0])
+      //fb_readOn(LOBBY, `LOBBY: ${col4}`, lobbyArray, fb_processReadOn);
       HTML_loadMultiGame(); //switch section from lobby to gtn
     });
   });
