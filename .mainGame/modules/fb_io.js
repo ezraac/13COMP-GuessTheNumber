@@ -74,17 +74,17 @@ function fb_login(_dataRec, permissions) {
                 console.log('fb_login: status = ' + loginStatus);
                 fb_writeRec(AUTHPATH, _dataRec.uid, 1);
             })
-                // Catch errors
-                .catch(function (error) {
-                    if (error) {
-                        var errorCode = error.code;
-                        var errorMessage = error.message;
-                        loginStatus = 'error: ' + error.code;
-                        console.log('fb_login: error code = ' + errorCode + '    ' + errorMessage);
+            // Catch errors
+            .catch(function (error) {
+                if (error) {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    loginStatus = 'error: ' + error.code;
+                    console.log('fb_login: error code = ' + errorCode + '    ' + errorMessage);
 
-                        alert(error);
-                    }
-                });
+                    alert(error);
+                }
+            });
         }
     }
 }
@@ -214,6 +214,7 @@ function fb_processUserDetails(_dbData, _data) {
         userDetails.sex = _dbData.sex
         userDetails.age = _dbData.age
 
+        sessionStorage.setItem("userDetails", JSON.stringify(userDetails));
         fb_readRec(GAMEPATH, _dbData.uid, userDetails, fb_processGameData, "all"); //reads user game data
     }
 }
@@ -252,12 +253,13 @@ function fb_processGameData(_dbData, _data, _game) {
         userGameData.GTN_Wins = _dbData.GTN_Wins
         userGameData.GTN_Losses = _dbData.GTN_Losses
         userGameData.GTN_Draws = _dbData.GTN_Draws
+
+        sessionStorage.setItem("userGameData", JSON.stringify(userGameData));
     }
 
     if (HTML_checkPage() == "index.html") {
         HTML_loadPage();
-    } else if (HTML_checkPage() == "gamePage.html") {
-        fb_processPlayerCreateLobby()
+        fb_processPlayerCreateLobby();
     }
 }
 
@@ -282,6 +284,8 @@ function fb_processPlayerCreateLobby() {
             p2_Status: "offline",
         }
     ]
+
+    sessionStorage.setItem("clientData", JSON.stringify(clientCreateLobby[0]))
 }
 
 /*

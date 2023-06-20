@@ -19,7 +19,3 @@ function gtn_guessNum() {
         }
     }
 }
-
-function gtn_checkGuess() {
-
-}

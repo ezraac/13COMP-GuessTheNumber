@@ -13,6 +13,7 @@ window.onload = function () {
     if (HTML_checkPage() == "gamePage.html") {
         fb_readOn(LOBBY, null, lobbyArray, fb_processReadOn);
         HTML_checkDisconnected();
+        fb_processPlayerCreateLobby
     }
     
     // REG PAGE ONLOAD
@@ -148,5 +149,22 @@ function HTML_loadMultiGame() {
 
 
 function HTML_checkDisconnected() {
-    
+    let onlineGame = JSON.parse(sessionStorage.getItem("currentGameData"));
+
+    if (onlineGame) {
+        if (onlineGame.turn != "end") {
+            playerTwoDetails = JSON.parse(sessionStorage.getItem("playerTwoData"));
+            clientCreateLobby[0] = JSON.parse(sessionStorage.getItem("clientData"));
+            HTML_loadMultiGame();
+        }
+    }
+}
+
+
+function HTML_checkLogin() {
+    if (sessionStorage.getItem("userDetails") && sessionStorage.getItem("userGameData")) {
+        return true
+    } else {
+        return false
+    }
 }

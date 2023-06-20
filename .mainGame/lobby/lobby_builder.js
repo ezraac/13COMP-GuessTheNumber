@@ -33,7 +33,7 @@ function html_build() {
   console.log("html_build: ");
 
   html_buildTableFunc("tb_userDetails", clientCreateLobby);
-  if (typeof clientCreateLobby.p2_Status === "undefined" || clientCreateLobby.p2_Status === null) {
+  if (typeof clientCreateLobby[0].p2_Status === "undefined" || clientCreateLobby[0].p2_Status === null) {
     clientCreateLobby[0].p2_Status = "offline";
   }
   clientCreateLobby[0].player = 1;
@@ -120,16 +120,19 @@ function html_buildTableFunc(_tableBodyID, _array) {
       var currentRow = $(this).closest("tr");
       // get current row's 1st TD value
       var col4 = currentRow.find("td:eq(4)").text();
-      console.log("html_buildTableFunc: uid = " + col4);
-      if (clientCreateLobby[0].p2_Status) {
-        delete clientCreateLobby[0].p2_Status;
+      if (col4 != userDetails.uid){
+        console.log("html_buildTableFunc: uid = " + col4);
+        console.log(clientCreateLobby[0])
+        if (clientCreateLobby[0].p2_Status) {
+          delete clientCreateLobby[0].p2_Status;
+        }
+        clientCreateLobby[0].player = 2;
+        onlineLobby = `${LOBBY}/LOBBY: ${col4}`
+        fb_updateRec(`${LOBBY}/LOBBY: ${col4}`, col4, {p2_Status: "online"})
+        fb_writeRec(`${LOBBY}/LOBBY: ${col4}`, userDetails.uid, clientCreateLobby[0])
+        //fb_readOn(LOBBY, `LOBBY: ${col4}`, lobbyArray, fb_processReadOn);
+        HTML_loadMultiGame(); //switch section from lobby to gtn
       }
-      clientCreateLobby[0].player = 2;
-      onlineLobby = `${LOBBY}/LOBBY: ${col4}`
-      fb_updateRec(`${LOBBY}/LOBBY: ${col4}`, col4, {p2_Status: "online"})
-      fb_writeRec(`${LOBBY}/LOBBY: ${col4}`, userDetails.uid, clientCreateLobby[0])
-      //fb_readOn(LOBBY, `LOBBY: ${col4}`, lobbyArray, fb_processReadOn);
-      HTML_loadMultiGame(); //switch section from lobby to gtn
     });
   });
 }
