@@ -93,7 +93,7 @@ function html_buildTableFunc(_tableBodyID, _array) {
     // Back ticks define a temperate literal
     console.log(_array[i])
     var player = Object.values(_array[i])
-    //console.log(player)
+    console.log(player)
     //player[0] = game name //player[1] = gtn wins //player[2] = gtn draws //player[3] = gtn losses //player[4] uid
     var row = `<tr>  
                 <td>${player[0]}</td>
@@ -104,7 +104,6 @@ function html_buildTableFunc(_tableBodyID, _array) {
                 <td><button class="b_join">Join</button></td>
               </tr>`
     html_table.innerHTML += row;
-    var lobbyWrite = _array[0]
   }
 
   /*--------------------------------------------------*/
@@ -128,8 +127,9 @@ function html_buildTableFunc(_tableBodyID, _array) {
         }
         clientCreateLobby[0].player = 2;
         onlineLobby = `${LOBBY}/LOBBY: ${col4}`
-        fb_updateRec(`${LOBBY}/LOBBY: ${col4}`, col4, {p2_Status: "online"})
-        fb_writeRec(`${LOBBY}/LOBBY: ${col4}`, userDetails.uid, clientCreateLobby[0])
+        fb_updateRec(onlineLobby, col4, {p2_Status: "online"})
+        fb_writeRec(onlineLobby, userDetails.uid, clientCreateLobby[0])
+        fb_writeRec(onlineLobby, "onlineGame", {turn: "p1"})
         //fb_readOn(LOBBY, `LOBBY: ${col4}`, lobbyArray, fb_processReadOn);
         HTML_loadMultiGame(); //switch section from lobby to gtn
       }

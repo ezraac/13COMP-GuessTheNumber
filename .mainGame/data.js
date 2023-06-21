@@ -45,6 +45,7 @@ var playerTwoDetails = []
 
 var inGame = false;
 var onlineLobby;
+var randomNum;
 /*****************************************************/
 
 /*****************************************************/
@@ -71,7 +72,6 @@ function db_login() {
 }
 
 function db_lobbyOnReadSort(_dbData) {
-
   var playerData = Object.values(_dbData);
   playerData.forEach(player => {
       for (let key in player) {
@@ -90,6 +90,7 @@ function db_lobbyOnReadSort(_dbData) {
               gameStats = player[key]
               sessionStorage.setItem("currentGameData", JSON.stringify(gameStats));
 
+              gtn_checkOppGuess(gameStats);
           }
       }
   })

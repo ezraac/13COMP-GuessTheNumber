@@ -145,6 +145,8 @@ function HTML_loadMultiGame() {
 
     document.getElementById(`p${player.player}_stats`).innerHTML = stats;
     document.getElementById(`p${playerTwoDetails.player}_stats`).innerHTML = opponentStats;
+
+    randomNum = Math.floor(Math.random()* 101)
 }
 
 

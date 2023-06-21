@@ -118,14 +118,14 @@
 
         <section id="gtn_game" style="display: none;">
           <div class="w3-half" style="background-color: #ededed;" id="p1_guess">
-            <label for="gtn_guess">your guess</label>
-            <input type="number" name="gtn_guess" id="gtn_guess" value="value">
+            <label for="gp_gtn_guess">your guess</label>
+            <input type="number" name="gp_gtn_guess" id="gtn_guess" value="value">
             <input type="button" value="guess" onclick="gtn_guessNum()">
           </div>
 
           <div class="w3-half" style="background-color: #ededed;" id="p2_guess">
-            <label for="gtn_guess">opponent's guess</label>
-            <input type="number" name="gtn_guess" id="gtn_guess" placeholder="WAITING FOR GUESS" disabled>
+            <p>opponent's guess</p>
+            <p id="gp_opponentGuess">WAITING FOR GUESS</p>
           </div>
         </section>
       </div>

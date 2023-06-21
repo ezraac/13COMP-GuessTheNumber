@@ -98,7 +98,15 @@ function fb_login(_dataRec, permissions) {
 function fb_writeRec(_path, _key, _data, _location) {
     console.log(`fb_WriteRec: path= ${_path} key= ${_key}`);
     writeStatus = "waiting"
-    firebase.database().ref(_path + "/" + _key).set(_data, function (error) {
+    let writePath;
+
+    if (_key != null) {
+        writePath = `${_path}/${_key}`;
+    } else {
+        writePath = _path
+    }
+
+    firebase.database().ref(writePath).set(_data, function (error) {
         if (error) {
             writeStatus = "failure"
             console.log(error)
