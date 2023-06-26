@@ -98,15 +98,9 @@ function fb_login(_dataRec, permissions) {
 function fb_writeRec(_path, _key, _data, _location) {
     console.log(`fb_WriteRec: path= ${_path} key= ${_key}`);
     writeStatus = "waiting"
-    let writePath;
 
-    if (_key != null) {
-        writePath = `${_path}/${_key}`;
-    } else {
-        writePath = _path
-    }
 
-    firebase.database().ref(writePath).set(_data, function (error) {
+    firebase.database().ref(_path + "/" + _key).set(_data, function (error) {
         if (error) {
             writeStatus = "failure"
             console.log(error)
@@ -145,7 +139,7 @@ function fb_readAll(_path, _data, _processAll) {
             var dbKeys = Object.keys(dbData)
 
             //_processall in parameter
-            _processAll(dbData, _data, dbKeys, _path)
+            _processAll(dbData, _data, dbKeys)
         }
     }
 
@@ -240,7 +234,7 @@ function fb_processAuthRole(_dbData, _data) {
         fb_writeRec(AUTHPATH, userDetails.uid, 1);
     } else {
         _data.userAuthRole = _dbData;
-        // HTML_updateHTMLFromPerms();
+        HTML_updateHTMLFromPerms();
     }
 }
 
@@ -290,6 +284,7 @@ function fb_processPlayerCreateLobby() {
             UID: userDetails.uid,
             player: 1,
             p2_Status: "offline",
+            p1_Status: "online",
         }
     ]
 
@@ -302,31 +297,32 @@ processes all data
 iterates through dbkeys and adds data in _data
 data is a whole persons data depending on path read
 */
-function fb_processAll(_dbData, _data, dbKeys, _path) {
-    console.log(_data, _dbData)
-    if (_path == LOBBY) {
-        for (i = 0; i < dbKeys.length; i++) {
-            let key = dbKeys[i]
-            let user = Object.values(_dbData[key])
-            
-            _data.push({
-                gameName: user[0].gameName,
-                GTN_Wins: user[0].GTN_Wins,
-                GTN_Losses: user[0].GTN_Losses,
-                GTN_Draws: user[0].GTN_Draws,
-                UID: user[0].UID,
-            })
+function fb_processLobbyAll(_dbData, _data, dbKeys) {
+    for (i = 0; i < dbKeys.length; i++) {
+        let key = dbKeys[i]
+        let user = Object.values(_dbData[key])
 
-            html_buildTableFunc("tb_userDetails", _data)
-        }
-    } else if (_path == GAMEPATH) {
-        for (i = 0; i < dbKeys.length; i++) {
-            let key = dbKeys[i]
-            _data.push({
-                gameName: _dbData[key].gameName,
+        console.log(user, key)
+        
+        _data.push({
+            gameName: user[0].gameName,
+            GTN_Wins: user[0].GTN_Wins,
+            GTN_Losses: user[0].GTN_Losses,
+            GTN_Draws: user[0].GTN_Draws,
+            UID: user[0].UID,
+        })
 
-            })
-        }
+        html_buildTableFunc("tb_userDetails", _data)
+    }
+}
+
+function fb_processGameAll(_dbData, _data, dbKeys) {
+    for (i = 0; i < dbKeys.length; i++) {
+        let key = dbKeys[i]
+        _data.push({
+            gameName: _dbData[key].gameName,
+
+        })
     }
 }
 
@@ -405,8 +401,17 @@ function fb_updateRec(_path, _key, _data) {
 }
 
 
-function fb_onDisconnect() {
+function fb_onDisconnect(_path, _key, _player) {
+    var ref = firebase.database().ref(`${_path}/${_key}/${_player}_Status`)
+    ref.onDisconnect().set("offline")
+}
 
+function fb_logout() {
+    firebase.auth().signOut().then(function() {
+        console.log("signout")
+    }, function(error) {
+        console.log(error)
+    });
 }
 /*****************************************************/
 //    END OF MODULE

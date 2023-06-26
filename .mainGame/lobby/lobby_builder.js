@@ -19,7 +19,7 @@ var html_sortKey = '';
 function html_getData() {
   console.log("html_getData: ");
 
-  fb_readAll(LOBBY, lobbyArray, fb_processAll);
+  fb_readAll(LOBBY, lobbyArray, fb_processLobbyAll);
 }
 
 /******************************************************/
@@ -35,10 +35,15 @@ function html_build() {
   html_buildTableFunc("tb_userDetails", clientCreateLobby);
   if (typeof clientCreateLobby[0].p2_Status === "undefined" || clientCreateLobby[0].p2_Status === null) {
     clientCreateLobby[0].p2_Status = "offline";
+    clientCreateLobby[0].p1_Status = "online";
   }
+
+  console.log(clientCreateLobby[0])
   clientCreateLobby[0].player = 1;
-  fb_writeRec(`${LOBBY}/LOBBY: ${userDetails.uid}`, userDetails.uid, clientCreateLobby[0])
-  onlineLobby = `${LOBBY}/LOBBY: ${userDetails.uid}`
+  onlineLobby = `${LOBBY}/LOBBY: ${userDetails.uid}`;
+  sessionStorage.setItem("onlineLobby", onlineLobby);
+  fb_writeRec(onlineLobby, userDetails.uid, clientCreateLobby[0]);
+  fb_onDisconnect(onlineLobby, userDetails.uid, "p1");
 }
 
 /******************************************************/
@@ -91,16 +96,15 @@ function html_buildTableFunc(_tableBodyID, _array) {
   // Loop thu array; build row & add it to table
   for (i = 0; i < _array.length; i++) {
     // Back ticks define a temperate literal
-    console.log(_array[i])
-    var player = Object.values(_array[i])
-    console.log(player)
+    var player = _array[i]
+    console.log(player, _array)
     //player[0] = game name //player[1] = gtn wins //player[2] = gtn draws //player[3] = gtn losses //player[4] uid
-    var row = `<tr>  
-                <td>${player[0]}</td>
-                <td class="w3-center">${player[1]}</td>
-                <td class="w3-center">${player[2]}</td>
-                <td class="w3-center">${player[3]}</td>
-                <td>${player[4]}</td>
+    var row = `<tr id='${player.UID}'>
+                <td>${player.gameName}</td>
+                <td class="w3-center">${player.GTN_Wins}</td>
+                <td class="w3-center">${player.GTN_Draws}</td>
+                <td class="w3-center">${player.GTN_Losses}</td>
+                <td>${player.UID}</td>
                 <td><button class="b_join">Join</button></td>
               </tr>`
     html_table.innerHTML += row;
@@ -117,20 +121,27 @@ function html_buildTableFunc(_tableBodyID, _array) {
     $("#tb_userDetails").on('click', '.b_join', function () {
       // get the current row
       var currentRow = $(this).closest("tr");
+      
       // get current row's 1st TD value
       var col4 = currentRow.find("td:eq(4)").text();
+
+      console.log("hi")
       if (col4 != userDetails.uid){
         console.log("html_buildTableFunc: uid = " + col4);
         console.log(clientCreateLobby[0])
-        if (clientCreateLobby[0].p2_Status) {
+        if (clientCreateLobby[0].p2_Status && clientCreateLobby[0].p1_Status) {
           delete clientCreateLobby[0].p2_Status;
+          delete clientCreateLobby[0].p1_Status;
         }
+
+        document.getElementById(`${col4}`).remove();
         clientCreateLobby[0].player = 2;
         onlineLobby = `${LOBBY}/LOBBY: ${col4}`
+        sessionStorage.setItem("onlineLobby", onlineLobby);
         fb_updateRec(onlineLobby, col4, {p2_Status: "online"})
         fb_writeRec(onlineLobby, userDetails.uid, clientCreateLobby[0])
         fb_writeRec(onlineLobby, "onlineGame", {turn: "p1"})
-        //fb_readOn(LOBBY, `LOBBY: ${col4}`, lobbyArray, fb_processReadOn);
+        fb_onDisconnect(onlineLobby, col4, "p2");
         HTML_loadMultiGame(); //switch section from lobby to gtn
       }
     });

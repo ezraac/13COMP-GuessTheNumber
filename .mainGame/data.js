@@ -95,12 +95,13 @@ function db_lobbyOnReadSort(_dbData) {
       }
   })
 
-  if (clientCreateLobby[0].p2_Status == "online" && inGame == false) {
+  if (clientCreateLobby[0].p1_Status == "online" && clientCreateLobby[0].p2_Status == "online" && inGame == false) {
     HTML_loadMultiGame();
     inGame = true;
     sessionStorage.setItem("inGame", inGame)
-    fb_writeRec(`${LOBBY}/LOBBY: ${userDetails.uid}`, "onlineGame", {turn: "p1"});
-}
+    onlineLobby = sessionStorage.getItem("onlineLobby")
+    fb_updateRec(onlineLobby, "onlineGame", {turn: "p1"});
+  }
 }
 /*****************************************************/
 //    END OF PROG

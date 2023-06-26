@@ -13,7 +13,6 @@ window.onload = function () {
     if (HTML_checkPage() == "gamePage.html") {
         fb_readOn(LOBBY, null, lobbyArray, fb_processReadOn);
         HTML_checkDisconnected();
-        fb_processPlayerCreateLobby
     }
     
     // REG PAGE ONLOAD
@@ -41,7 +40,6 @@ function HTML_updateHTMLFromPerms() {
 		HTML_isAdmin = true;
     } else {
     	document.getElementById("lP_Admin").remove();
-      	document.getElementById("s_adminPage").remove();
 		window.ad_admin = null; //sets function to null
     }
 }
@@ -118,9 +116,11 @@ function HTML_loadPage() {
 // called when user presses return button (in gamePage)
 // shows landing page and hides gamepage
 /*****************************************************/
-function HTML_returnPage() {
-    //document.getElementById("landingPage").style.display = "block";
-    //document.getElementById("gamePage").style.display = "none";
+function HTML_returnLobby() {
+    document.getElementById("gtn_game").style.display = "none";
+    document.getElementById("s_table").style.display = "block";
+    document.getElementById("p1_stats").innerHTML = "WAITING FOR PLAYER 1";
+    document.getElementById("p2_stats").innerHTML = "WAITING FOR PLAYER 2";
 }
 
 
@@ -145,8 +145,15 @@ function HTML_loadMultiGame() {
 
     document.getElementById(`p${player.player}_stats`).innerHTML = stats;
     document.getElementById(`p${playerTwoDetails.player}_stats`).innerHTML = opponentStats;
-
-    randomNum = Math.floor(Math.random()* 101)
+    document.getElementById("gtn_player").innerHTML = `you are player ${player.player}`;
+    document.getElementById("gp_opponentGuess").innerHTML = "WAITING FOR GUESS";
+    let onlineGame = JSON.parse(sessionStorage.getItem("currentGameData"));
+    if (onlineGame.turn == `p${player.player}`) {
+        document.getElementById("gp_gtnInfo").innerHTML = "turn: your turn";
+    } else {
+        document.getElementById("gp_gtnInfo").innerHTML = "turn: opponent's turn";
+    }
+    randomNum = Math.floor(Math.random()* 101);
 }
 
 
@@ -155,8 +162,16 @@ function HTML_checkDisconnected() {
 
     if (onlineGame) {
         if (onlineGame.turn != "end") {
+            console.log("reconnected")
             playerTwoDetails = JSON.parse(sessionStorage.getItem("playerTwoData"));
             clientCreateLobby[0] = JSON.parse(sessionStorage.getItem("clientData"));
+            onlineLobby = sessionStorage.getItem("onlineLobby");
+            
+            if (clientCreateLobby[0].player == 1) {
+                fb_updateRec(onlineLobby, clientCreateLobby[0].UID, {p1_Status: "online"})
+            } else {
+                fb_updateRec(onlineLobby, playerTwoDetails.UID, {p2_Status: "online"})
+            }
             HTML_loadMultiGame();
         }
     }
@@ -169,4 +184,14 @@ function HTML_checkLogin() {
     } else {
         return false
     }
+}
+
+function HTML_logout() {
+    fb_logout();
+    window.location.replace("index.html")
+    sessionStorage.clear();
+}
+
+function HTML_dbSync() {
+    fb_login(userDetails, permissions);
 }

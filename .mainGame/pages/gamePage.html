@@ -81,7 +81,7 @@
             <div class="w3-row-padding w3-margin-top">
               <div class='w3-col s12 m6 l4'>
                 <button id='b_getData' class='b_options 
-                w3-button w3-disabled w3-xlarge w3-border w3-brown' style='width: 100%;' onclick="html_getData()">get
+                w3-button w3-xlarge w3-border w3-brown' style='width: 100%;' onclick="html_getData()">get
                   data</button>
               </div>
 
@@ -117,15 +117,24 @@
 
 
         <section id="gtn_game" style="display: none;">
-          <div class="w3-half" style="background-color: #ededed;" id="p1_guess">
-            <label for="gp_gtn_guess">your guess</label>
-            <input type="number" name="gp_gtn_guess" id="gtn_guess" value="value">
+          <div class="w3-half" style="color: #2d2d2d;" id="p1_guess">
+            <label for="gp_gtnGuess">your guess</label>
+            <input type="number" name="gp_gtnGuess" id="gtn_guess">
             <input type="button" value="guess" onclick="gtn_guessNum()">
           </div>
 
-          <div class="w3-half" style="background-color: #ededed;" id="p2_guess">
+          <div class="w3-half" style="color: #2d2d2d;" id="p2_guess">
+            <p id="gtn_player">you are player</p>
+            <p id="gp_gtnInfo"></p>
             <p>opponent's guess</p>
             <p id="gp_opponentGuess">WAITING FOR GUESS</p>
+          </div>
+
+          <div class="w3-container">
+            <h1>HOW TO PLAY</h1>
+            <p>you and your opponent both have random numbers generated. 
+              you both will need to guess your randomly generated number. 
+              whoever guesses first wins!</p>
           </div>
         </section>
       </div>
