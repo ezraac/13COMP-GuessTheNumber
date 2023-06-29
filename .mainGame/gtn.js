@@ -10,18 +10,18 @@ function gtn_guessNum() {
             if (playerguess != randomNum) {
                 document.getElementById("gp_gtnInfo").innerHTML = "turn: opponent";
                 if (clientCreateLobby[0].player == 1) {
-                    fb_writeRec(onlineLobby, "onlineGame", {playerOneGuess: playerguess, turn: "p2"});
+                    fb_updateRec(onlineLobby, "onlineGame", {playerOneGuess: playerguess, turn: "p2"});
                 } else if (clientCreateLobby[0].player == 2) {
-                    fb_writeRec(onlineLobby, "onlineGame", {playerTwoGuess: playerguess, turn: "p1"});
+                    fb_updateRec(onlineLobby, "onlineGame", {playerTwoGuess: playerguess, turn: "p1"});
                 }
             } else {
                 checkWrite = true;
                 if (clientCreateLobby[0].player == 1) {
-                    fb_writeRec(onlineLobby, "onlineGame", {playerOneGuess: playerguess, turn: "end", winner: "p1"});
+                    fb_updateRec(onlineLobby, "onlineGame", {playerOneGuess: playerguess, turn: "end", winner: "p1"});
                     gtn_resetLobby(clientCreateLobby[0], playerTwoDetails, gameStats);
                     alert("you guessed the correct number!");
                 } else if (clientCreateLobby[0].player == 2) {
-                    fb_writeRec(onlineLobby, "onlineGame", {playerTwoGuess: playerguess, turn: "end", winner: "p2"});
+                    fb_updateRec(onlineLobby, "onlineGame", {playerTwoGuess: playerguess, turn: "end", winner: "p2"});
                     gtn_resetLobby(playerTwoDetails, clientCreateLobby[0], gameStats);
                     alert("you guessed the correct number!");
                 }
@@ -50,6 +50,12 @@ function gtn_checkOppGuess(_onlineGame) {
             } else {
                 gtn_resetLobby(playerTwoDetails, clientCreateLobby[0],  _onlineGame);
             }
+        }
+    } else if (_onlineGame.turn == "hardReset") {
+        if (clientCreateLobby[0].player == 1) {
+            db_hardResetLobby(clientCreateLobby.UID, playerTwoDetails.UID, true)
+        } else {
+            db_hardResetLobby(playerTwoDetails.UID, clientCreateLobby.UID, true)
         }
     }
 }
@@ -97,6 +103,7 @@ function gtn_resetLobby(_playerOne, _playerTwo, _onlineGame) {
         }
     }
 
+    inGame = false;
     sessionStorage.setItem("clientData", JSON.stringify(clientCreateLobby[0]));
 
     sessionStorage.removeItem("playerTwoData");
@@ -107,4 +114,26 @@ function gtn_resetLobby(_playerOne, _playerTwo, _onlineGame) {
     console.log("removed");
     checkWrite = false;
     HTML_returnLobby();
+}
+
+function gtn_checkDisconnect(_onlineGame) {
+    if (_onlineGame.p1_Status == "offline" && _onlineGame.p2_Status == "offline") {
+        fb_writeRec(LOBBY, `Lobby: ${_onlineGame.p1_uid}`, null);
+        sessionStorage.removeItem("playerTwoData");
+        sessionStorage.removeItem("currentGameData");
+        sessionStorage.removeItem("inGame");
+        sessionStorage.removeItem("onlineGame");
+        HTML_returnLobby();
+    }
+
+    if (_onlineGame.p1_Status == "offline" || _onlineGame.p2_Status == "offline") {
+        if (inGame == true) {
+            document.getElementById("gtn_game").style.display = "none";
+            document.getElementById("gtn_disconnectPrompt").style.display = "block";
+        }
+    }
+}
+
+function gtn_disconnectReset() {
+
 }

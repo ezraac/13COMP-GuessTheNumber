@@ -87,7 +87,6 @@ canvas {
     ADMIN page & BUTTON styling
   /*------------------------------------------------------------*/
 #s_adminPage {
-  display: none;
   height: 86vh;
   overflow: scroll;
 }

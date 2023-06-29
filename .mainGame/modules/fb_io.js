@@ -28,8 +28,6 @@ function fb_initialise() {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     console.log(firebase);
-
-    database = firebase.database();
 }
 
 /*****************************************************/
@@ -55,6 +53,7 @@ function fb_login(_dataRec, permissions) {
             fb_readRec(DBPATH, _dataRec.uid, userDetails, fb_processUserDetails); //reads user details
             fb_readOn(DBPATH, _dataRec.uid, userDetails, fb_processReadOn)
             fb_readRec(AUTHPATH, _dataRec.uid, permissions, fb_processAuthRole); //reads user auth role
+            console.log(permissions)
             loginStatus = 'logged in';
             console.log('fb_login: status = ' + loginStatus);
         }
@@ -139,7 +138,11 @@ function fb_readAll(_path, _data, _processAll) {
             var dbKeys = Object.keys(dbData)
 
             //_processall in parameter
-            _processAll(dbData, _data, dbKeys)
+            if (_path == DBPATH || _path == GAMEPATH) {
+                _processAll(snapshot, readStatus)
+            } else {
+                _processAll(dbData, readStatus, _data, dbKeys)
+            }
         }
     }
 
@@ -158,14 +161,11 @@ function fb_readAll(_path, _data, _processAll) {
 /*****************************************************/
 function fb_readRec(_path, _key, _data, _processData, _readExtraVar) {
     console.log('fb_readRec: path= ' + _path + '  key= ' + _key);
+    console.log(_data)
 
 
     readStatus = "waiting"
-    if (_path == LOBBY) {
-        firebase.database().ref(`${_path}`).once("value", gotRecord, readErr)
-    } else {
-        firebase.database().ref(`${_path}/${_key}`).once("value", gotRecord, readErr)
-    }
+    firebase.database().ref(`${_path}/${_key}`).once("value", gotRecord, readErr)
 
     function gotRecord(snapshot) {
         let dbData = snapshot.val()
@@ -232,8 +232,13 @@ calls function to check perms for admin button
 function fb_processAuthRole(_dbData, _data) {
     if (_dbData == null) {
         fb_writeRec(AUTHPATH, userDetails.uid, 1);
+        _data.userAuthRole = 1;
+        sessionStorage.setItem("permissions", _data.userAuthRole);
     } else {
+        console.log(_dbData)
         _data.userAuthRole = _dbData;
+        console.log(_data, permissions)
+        sessionStorage.setItem("permissions", _data.userAuthRole);
         HTML_updateHTMLFromPerms();
     }
 }
@@ -283,8 +288,6 @@ function fb_processPlayerCreateLobby() {
             GTN_Draws: userGameData.GTN_Draws,
             UID: userDetails.uid,
             player: 1,
-            p2_Status: "offline",
-            p1_Status: "online",
         }
     ]
 
@@ -297,22 +300,24 @@ processes all data
 iterates through dbkeys and adds data in _data
 data is a whole persons data depending on path read
 */
-function fb_processLobbyAll(_dbData, _data, dbKeys) {
-    for (i = 0; i < dbKeys.length; i++) {
-        let key = dbKeys[i]
-        let user = Object.values(_dbData[key])
-
-        console.log(user, key)
-        
-        _data.push({
-            gameName: user[0].gameName,
-            GTN_Wins: user[0].GTN_Wins,
-            GTN_Losses: user[0].GTN_Losses,
-            GTN_Draws: user[0].GTN_Draws,
-            UID: user[0].UID,
-        })
-
-        html_buildTableFunc("tb_userDetails", _data)
+function fb_processLobbyAll(_dbData, _result, _data, dbKeys) {
+    if (_result == "ok") {
+        for (i = 0; i < dbKeys.length; i++) {
+            let key = dbKeys[i]
+            let user = Object.values(_dbData[key])
+    
+            console.log(user, key)
+            
+            _data.push({
+                gameName: user[0].gameName,
+                GTN_Wins: user[0].GTN_Wins,
+                GTN_Losses: user[0].GTN_Losses,
+                GTN_Draws: user[0].GTN_Draws,
+                UID: user[0].UID,
+            })
+    
+            html_buildTableFunc("tb_userDetails", _data)
+        }
     }
 }
 
@@ -402,8 +407,11 @@ function fb_updateRec(_path, _key, _data) {
 
 
 function fb_onDisconnect(_path, _key, _player) {
-    var ref = firebase.database().ref(`${_path}/${_key}/${_player}_Status`)
-    ref.onDisconnect().set("offline")
+    inGame = sessionStorage.getItem("inGame")
+    if (inGame == true) {
+        var ref = firebase.database().ref(`${_path}/${_key}/${_player}_Status`)
+        ref.onDisconnect().set("offline")
+    }
 }
 
 function fb_logout() {

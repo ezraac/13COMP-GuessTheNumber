@@ -42,9 +42,9 @@
 // Return:
 /**************************************************************/
 function ad_admin() {
-  if (HTML_isAdmin == true) {
+  if (permissions.userAuthRole >= 2) {
     window.location.replace("pages/adminPage.html")
-    ad_user();
+    //ad_user();
   }
 }
 
@@ -101,15 +101,12 @@ function ad_Game() {
 //         NOTE: this is the raw data, EG snapshot, NOT snapshot.val()
 // Return:
 /**************************************************************/
-function ad_processUSERReadAll(_result, _dbRec) {
-  console.log('ad_processUSERReadAll: ' + _result);
-  console.log(_dbRec)
-
+function ad_processUSERReadAll(_dbRec, _result) {
+  console.log(Object.values(_dbRec))
 
   var childKey;
   var childData;
   var ad_adminArray = [];
-
   // Note: if read was successful, 1st input parameter must = "OK"       //<=======
   if (_result = "ok") {
     _dbRec.forEach(function (childSnapshot) {
@@ -155,7 +152,7 @@ function ad_processUSERReadAll(_result, _dbRec) {
 //         NOTE: this is the raw data, EG snapshot, NOT snapshot.val()
 // Return:
 /**************************************************************/
-function ad_processGameReadAll(_result, _dbRec) {
+function ad_processGameReadAll(_dbRec, _result) {
   console.log('ad_processBBReadAll: ', 'result = ' + _result);
 
   var childKey;
@@ -176,6 +173,9 @@ function ad_processGameReadAll(_result, _dbRec) {
         PTB_avgScore: childData.PTB_avgScore,
         TTT_Losses: childData.TTT_Losses,
         TTT_Wins: childData.TTT_Wins,
+        GTN_Wins: childData.GTN_Wins,
+        GTN_Draws: childData.GTN_Draws,
+        GTN_Losses: childData.GTN_Losses,
         uid: childKey,
       });
     });
@@ -185,10 +185,10 @@ function ad_processGameReadAll(_result, _dbRec) {
     //  7 = COLUMMN NUMBER WHICH CONTAINS THE DATABASE KEY.              //<=======
     //  8 = DATABASE PATH THE RECORDS WERE READ FROM.                    //<=======
     ad_displayAll("t_userData", ad_adminArray, true, "", "", "",
-      6, GAMEPATH);                                                //<=======
+      9, GAMEPATH);                                                //<=======
   } else if (_result == 'n/a') {
     ad_displayAll("t_userData", ad_adminArray, true, "", "", "",
-      6, GAMEPATH);                                                //<=======
+      9, GAMEPATH);                                                //<=======
   }
 }
 
@@ -277,15 +277,15 @@ function ad_displayAll(_tableId, _array, _action, _hideId1, _hideId2, _showId, _
   console.log('ad_displayAll: ');
 
   // Optionaly hide html divs and show another html div
-  if (_hideId1 != null && _hideId1 != "") {
-    document.getElementById(_hideId1).style.display = "none";
-  }
-  if (_hideId2 != null && _hideId2 != "") {
-    document.getElementById(_hideId2).style.display = "none";
-  }
-  if (_showId != null && _showId != "") {
-    document.getElementById(_showId).style.display = "block";
-  }
+  // if (_hideId1 != null && _hideId1 != "") {
+  //   document.getElementById(_hideId1).style.display = "none";
+  // }
+  // if (_hideId2 != null && _hideId2 != "") {
+  //   document.getElementById(_hideId2).style.display = "none";
+  // }
+  // if (_showId != null && _showId != "") {
+  //   document.getElementById(_showId).style.display = "block";
+  // }
 
   // Ensure the html table is empty before we start
   if (document.getElementById(_tableId).rows.length > 0) {

@@ -33,17 +33,25 @@ function html_build() {
   console.log("html_build: ");
 
   html_buildTableFunc("tb_userDetails", clientCreateLobby);
-  if (typeof clientCreateLobby[0].p2_Status === "undefined" || clientCreateLobby[0].p2_Status === null) {
-    clientCreateLobby[0].p2_Status = "offline";
-    clientCreateLobby[0].p1_Status = "online";
-  }
+  // if (typeof clientCreateLobby[0].p2_Status === "undefined" || clientCreateLobby[0].p2_Status === null) {
+  //   clientCreateLobby[0].p2_Status = "offline";
+  //   clientCreateLobby[0].p1_Status = "online";
+  // }
 
-  console.log(clientCreateLobby[0])
-  clientCreateLobby[0].player = 1;
+  // console.log(clientCreateLobby[0])
+  // clientCreateLobby[0].player = 1;
+  let lobbyData = {
+      onlineGame: {
+        p1_Status: "online",
+        p2_Status: "offline",
+        p1_uid: clientCreateLobby[0].UID,
+      }
+  };
+  lobbyData[userDetails.uid] = clientCreateLobby[0];
+
   onlineLobby = `${LOBBY}/LOBBY: ${userDetails.uid}`;
   sessionStorage.setItem("onlineLobby", onlineLobby);
-  fb_writeRec(onlineLobby, userDetails.uid, clientCreateLobby[0]);
-  fb_onDisconnect(onlineLobby, userDetails.uid, "p1");
+  fb_writeRec(LOBBY, `LOBBY: ${userDetails.uid}`, lobbyData);
 }
 
 /******************************************************/
@@ -128,20 +136,17 @@ function html_buildTableFunc(_tableBodyID, _array) {
       console.log("hi")
       if (col4 != userDetails.uid){
         console.log("html_buildTableFunc: uid = " + col4);
-        console.log(clientCreateLobby[0])
-        if (clientCreateLobby[0].p2_Status && clientCreateLobby[0].p1_Status) {
-          delete clientCreateLobby[0].p2_Status;
-          delete clientCreateLobby[0].p1_Status;
-        }
 
         document.getElementById(`${col4}`).remove();
         clientCreateLobby[0].player = 2;
+
         onlineLobby = `${LOBBY}/LOBBY: ${col4}`
         sessionStorage.setItem("onlineLobby", onlineLobby);
-        fb_updateRec(onlineLobby, col4, {p2_Status: "online"})
+        inGame = true;
+        sessionStorage.setItem("inGame", inGame);
+
+        fb_updateRec(onlineLobby, "onlineGame", {p2_uid: userDetails.uid, p2_Status: "online", turn: "p1"})
         fb_writeRec(onlineLobby, userDetails.uid, clientCreateLobby[0])
-        fb_writeRec(onlineLobby, "onlineGame", {turn: "p1"})
-        fb_onDisconnect(onlineLobby, col4, "p2");
         HTML_loadMultiGame(); //switch section from lobby to gtn
       }
     });

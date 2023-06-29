@@ -14,12 +14,22 @@ window.onload = function () {
         fb_readOn(LOBBY, null, lobbyArray, fb_processReadOn);
         HTML_checkDisconnected();
     }
-    
+
     // REG PAGE ONLOAD
     if (HTML_checkPage() == "regPage.html") {
         reg_popUp();
     }
-  }
+
+    if (HTML_checkPage() == "index.html") {
+        if (HTML_checkLogin() == true) {
+            HTML_updateHTMLFromPerms();
+        }
+    }
+
+    if (HTML_checkPage == "adminPage.html") {
+        ad_user();
+    }
+}
 
 
 function HTML_checkPage() {
@@ -34,13 +44,17 @@ function HTML_checkPage() {
 /*****************************************************/
 var HTML_isAdmin = false;
 function HTML_updateHTMLFromPerms() {
-    console.log(permissions.userAuthRole)
+
+    if (permissions.userAuthRole == null) {
+        permissions.userAuthRole = parseInt(sessionStorage.getItem("permissions"))
+    }
+
     if (permissions.userAuthRole >= 2) {
         document.getElementById("lP_Admin").style.display = "block";
-		HTML_isAdmin = true;
+        HTML_isAdmin = true;
     } else {
-    	document.getElementById("lP_Admin").remove();
-		window.ad_admin = null; //sets function to null
+        document.getElementById("lP_Admin").remove();
+        //window.ad_admin = null; //sets function to null
     }
 }
 
@@ -50,21 +64,21 @@ function HTML_updateHTMLFromPerms() {
 // updates admin page tabs
 /*****************************************************/
 function HTML_updateAdminPage(page) {
-    switch(page) {
+    switch (page) {
         case "ad_user":
             document.getElementById("b_adUser").style.backgroundColor = "cyan";
             document.getElementById("b_adHome").style.backgroundColor = "grey";
-            document.getElementById("b_adPTB").style.backgroundColor   = "grey";
+            document.getElementById("b_adPTB").style.backgroundColor = "grey";
             break;
-        
+
         case "ad_home":
             //document.getElementById('gamePage').style.display    = "none";
             //document.getElementById("landingPage").style.display   = "block";
             //document.getElementById('s_adminPage').style.display = "none";
-            window.location.replace("index.html")
+            window.location.replace("../index.html")
             break;
         case "ad_Game":
-            document.getElementById("b_adPTB").style.backgroundColor   = "cyan";
+            document.getElementById("b_adPTB").style.backgroundColor = "cyan";
             document.getElementById("b_adUser").style.backgroundColor = "grey";
             document.getElementById("b_adHome").style.backgroundColor = "grey";
             break;
@@ -80,18 +94,18 @@ function HTML_editGameInfo(game) {
     document.getElementById("username").innerHTML = `Username: ${userGameData.gameName}`;
     document.getElementById("hellouser").innerHTML = `Hello ${userDetails.name}`
 
-	//ptb details
+    //ptb details
     if (game == "PTB") {
-		document.getElementById("highavgscore").style.display = "block"
+        document.getElementById("highavgscore").style.display = "block"
         document.getElementById("misses").innerHTML = "Misses: 0";
         document.getElementById("hitscore").innerHTML = "Average Hit Score: 0";
         document.getElementById("highavgscore").innerHTML = `Highest AHS: ${userGameData.PTB_avgScore}`;
         document.getElementById("highscore").innerHTML = `Fastest Time: ${userGameData.PTB_timeRec}s`;
         document.getElementById("game_timeDiv").style.display = "block";
 
-	//tic tac toe details	
+        //tic tac toe details	
     } else if (game == "TTT") {
-		document.getElementById("highavgscore").style.display = "none"
+        document.getElementById("highavgscore").style.display = "none"
         document.getElementById("hitscore").innerHTML = `Wins: ${userGameData.TTT_Wins}`;
         document.getElementById("highscore").innerHTML = `Losses: ${userGameData.TTT_Losses}`;
         document.getElementById("misses").innerHTML = "";
@@ -140,7 +154,7 @@ function HTML_loadMultiGame() {
     <li>Username: ${playerTwoDetails.gameName}</li>
     <li>Wins: ${playerTwoDetails.GTN_Wins}</li>
     <li>Draws: ${playerTwoDetails.GTN_Draws}</li>
-    <li>Losses: ${playerTwoDetails.GTN_Losses}
+    <li>Losses: ${playerTwoDetails.GTN_Losses}</li>
     `
 
     document.getElementById(`p${player.player}_stats`).innerHTML = stats;
@@ -153,7 +167,8 @@ function HTML_loadMultiGame() {
     } else {
         document.getElementById("gp_gtnInfo").innerHTML = "turn: opponent's turn";
     }
-    randomNum = Math.floor(Math.random()* 101);
+    randomNum = Math.floor(Math.random() * 101);
+    fb_onDisconnect(onlineLobby, "onlineGame", "p2");
 }
 
 
@@ -166,11 +181,11 @@ function HTML_checkDisconnected() {
             playerTwoDetails = JSON.parse(sessionStorage.getItem("playerTwoData"));
             clientCreateLobby[0] = JSON.parse(sessionStorage.getItem("clientData"));
             onlineLobby = sessionStorage.getItem("onlineLobby");
-            
+
             if (clientCreateLobby[0].player == 1) {
-                fb_updateRec(onlineLobby, clientCreateLobby[0].UID, {p1_Status: "online"})
+                fb_updateRec(onlineLobby, "onlineGame", { p1_Status: "online" })
             } else {
-                fb_updateRec(onlineLobby, playerTwoDetails.UID, {p2_Status: "online"})
+                fb_updateRec(onlineLobby, "onlineGame", { p2_Status: "online" })
             }
             HTML_loadMultiGame();
         }
@@ -188,10 +203,6 @@ function HTML_checkLogin() {
 
 function HTML_logout() {
     fb_logout();
-    window.location.replace("index.html")
-    sessionStorage.clear();
-}
-
-function HTML_dbSync() {
     fb_login(userDetails, permissions);
+    sessionStorage.clear();
 }

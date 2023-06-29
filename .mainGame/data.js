@@ -55,6 +55,11 @@ var randomNum;
 // Input:
 // Return:
 /*****************************************************/
+function db_fbSync() {
+  fb_login(userDetails, permissions);
+  console.log(permissions);
+}
+
 function db_login() {
   let check = HTML_checkLogin()
 
@@ -80,6 +85,7 @@ function db_lobbyOnReadSort(_dbData) {
               playerTwoDetails = player[key];
               console.log(playerTwoDetails)
               sessionStorage.setItem("playerTwoData", JSON.stringify(playerTwoDetails))
+              db_checkStart();
           }
           if (key == userDetails.uid) {
               clientCreateLobby[0] = player[key]
@@ -87,21 +93,38 @@ function db_lobbyOnReadSort(_dbData) {
               sessionStorage.setItem("clientData", JSON.stringify(clientCreateLobby[0]))
           }
           if (key == "onlineGame") {
-              gameStats = player[key]
-              sessionStorage.setItem("currentGameData", JSON.stringify(gameStats));
+            gameStats = player[key]
+            sessionStorage.setItem("currentGameData", JSON.stringify(gameStats));
 
-              gtn_checkOppGuess(gameStats);
+            gtn_checkDisconnect(gameStats);
+            gtn_checkOppGuess(gameStats);
           }
       }
   })
+}
 
-  if (clientCreateLobby[0].p1_Status == "online" && clientCreateLobby[0].p2_Status == "online" && inGame == false) {
-    HTML_loadMultiGame();
+function db_checkStart() {
+  if (gameStats.p1_Status == "online" && gameStats.p2_Status == "online" && inGame == false) {
+    console.log("yes")
     inGame = true;
     sessionStorage.setItem("inGame", inGame)
-    onlineLobby = sessionStorage.getItem("onlineLobby")
+    onlineLobby = sessionStorage.getItem("onlineLobby");
     fb_updateRec(onlineLobby, "onlineGame", {turn: "p1"});
+    fb_onDisconnect(onlineLobby, "onlineGame", "p1");
+    HTML_loadMultiGame();
   }
+}
+
+function db_hardResetLobby(_player1UID, _player2UID, _check) {
+  if (_check == true) {
+    fb_updateRec(onlineLobby, "onlineGame", {turn: "hardReset"});
+    fb_writeRec(LOBBY, `Lobby: ${_player1UID}`, null);
+  }
+  sessionStorage.removeItem("playerTwoData");
+  sessionStorage.removeItem("currentGameData");
+  sessionStorage.removeItem("inGame");
+  sessionStorage.removeItem("onlineGame");
+  HTML_returnLobby();
 }
 /*****************************************************/
 //    END OF PROG
