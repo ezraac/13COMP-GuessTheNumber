@@ -51,12 +51,6 @@ function gtn_checkOppGuess(_onlineGame) {
                 gtn_resetLobby(playerTwoDetails, clientCreateLobby[0],  _onlineGame);
             }
         }
-    } else if (_onlineGame.turn == "hardReset") {
-        if (clientCreateLobby[0].player == 1) {
-            db_hardResetLobby(clientCreateLobby.UID, playerTwoDetails.UID, true)
-        } else {
-            db_hardResetLobby(playerTwoDetails.UID, clientCreateLobby.UID, true)
-        }
     }
 }
 
@@ -84,6 +78,7 @@ function gtn_resetLobby(_playerOne, _playerTwo, _onlineGame) {
                 alert("opponent guessed their random number");
             }
     
+            fb_onDisconnectOff(onlineLobby, "onlineGame", "p1")
             delete _playerOne.p2_Status;
             if (document.getElementById(`${_playerOne.UID}`)) {
                 document.getElementById(`${_playerOne.UID}`).remove();
@@ -91,7 +86,7 @@ function gtn_resetLobby(_playerOne, _playerTwo, _onlineGame) {
         }
     
     } else {
-        console.log("p2")
+        fb_onDisconnectOff(onlineLobby, "onlineGame", "p2")
         if (_onlineGame.winner == "p1") {
             console.log("winner = p1");
             userGameData.GTN_Losses += 1;
@@ -111,12 +106,16 @@ function gtn_resetLobby(_playerOne, _playerTwo, _onlineGame) {
     sessionStorage.removeItem("inGame");
     sessionStorage.removeItem("onlineGame");
 
+    gameStats = null;
+    playerTwoDetails = null;
+
     console.log("removed");
     checkWrite = false;
     HTML_returnLobby();
 }
 
 function gtn_checkDisconnect(_onlineGame) {
+    console.log("check disconnect: " + _onlineGame)
     if (_onlineGame.p1_Status == "offline" && _onlineGame.p2_Status == "offline") {
         fb_writeRec(LOBBY, `Lobby: ${_onlineGame.p1_uid}`, null);
         sessionStorage.removeItem("playerTwoData");
@@ -125,12 +124,7 @@ function gtn_checkDisconnect(_onlineGame) {
         sessionStorage.removeItem("onlineGame");
         HTML_returnLobby();
     }
-
     if (_onlineGame.p1_Status == "offline" || _onlineGame.p2_Status == "offline") {
-        if (inGame == true) {
-            document.getElementById("gtn_game").style.display = "none";
-            document.getElementById("gtn_disconnectPrompt").style.display = "block";
-        }
     }
 }
 

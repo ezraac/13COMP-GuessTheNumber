@@ -168,7 +168,7 @@ function HTML_loadMultiGame() {
         document.getElementById("gp_gtnInfo").innerHTML = "turn: opponent's turn";
     }
     randomNum = Math.floor(Math.random() * 101);
-    fb_onDisconnect(onlineLobby, "onlineGame", "p2");
+    fb_onDisconnect(onlineLobby, "onlineGame", `p${player.player}`);
 }
 
 

@@ -110,21 +110,8 @@ function db_checkStart() {
     sessionStorage.setItem("inGame", inGame)
     onlineLobby = sessionStorage.getItem("onlineLobby");
     fb_updateRec(onlineLobby, "onlineGame", {turn: "p1"});
-    fb_onDisconnect(onlineLobby, "onlineGame", "p1");
     HTML_loadMultiGame();
   }
-}
-
-function db_hardResetLobby(_player1UID, _player2UID, _check) {
-  if (_check == true) {
-    fb_updateRec(onlineLobby, "onlineGame", {turn: "hardReset"});
-    fb_writeRec(LOBBY, `Lobby: ${_player1UID}`, null);
-  }
-  sessionStorage.removeItem("playerTwoData");
-  sessionStorage.removeItem("currentGameData");
-  sessionStorage.removeItem("inGame");
-  sessionStorage.removeItem("onlineGame");
-  HTML_returnLobby();
 }
 /*****************************************************/
 //    END OF PROG

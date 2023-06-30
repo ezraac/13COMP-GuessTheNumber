@@ -408,10 +408,16 @@ function fb_updateRec(_path, _key, _data) {
 
 function fb_onDisconnect(_path, _key, _player) {
     inGame = sessionStorage.getItem("inGame")
-    if (inGame == true) {
+    if (inGame == 'true') {
         var ref = firebase.database().ref(`${_path}/${_key}/${_player}_Status`)
         ref.onDisconnect().set("offline")
     }
+}
+
+function fb_onDisconnectOff(_path, _key, _player) {
+    console.log("ondisconnect off for " + _player)
+    var ref = firebase.database().ref(`${_path}/${_key}/${_player}_Status`)
+    ref.onDisconnect().cancel()
 }
 
 function fb_logout() {

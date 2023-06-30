@@ -39,7 +39,7 @@ function html_build() {
   // }
 
   // console.log(clientCreateLobby[0])
-  // clientCreateLobby[0].player = 1;
+  clientCreateLobby[0].player = 1;
   let lobbyData = {
       onlineGame: {
         p1_Status: "online",
@@ -145,8 +145,8 @@ function html_buildTableFunc(_tableBodyID, _array) {
         inGame = true;
         sessionStorage.setItem("inGame", inGame);
 
-        fb_updateRec(onlineLobby, "onlineGame", {p2_uid: userDetails.uid, p2_Status: "online", turn: "p1"})
-        fb_writeRec(onlineLobby, userDetails.uid, clientCreateLobby[0])
+        fb_updateRec(onlineLobby, "onlineGame", {p2_uid: userDetails.uid, p2_Status: "online", turn: "p1"});
+        fb_writeRec(onlineLobby, userDetails.uid, clientCreateLobby[0]);
         HTML_loadMultiGame(); //switch section from lobby to gtn
       }
     });
