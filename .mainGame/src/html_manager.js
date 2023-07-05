@@ -2,6 +2,14 @@
 // html_manager.js
 // written by Ezra 2023
 /*****************************************************/
+
+/*****************************************************/
+//window.onload = function()
+//called when the page loads fully
+//will always initialise firebase
+//HTML_checkPage() function returns the filename of the page currently in the window.
+//code will execute if the pagename == to whatever page i want certain functions to run.
+/*****************************************************/
 window.onload = function () {
 
     fb_initialise();
@@ -36,11 +44,16 @@ window.onload = function () {
 
 }
 
-
+/*****************************************************/
+//HTML_checkPage()
+//called mainly in the window.location = function() function a few lines above this.
+//function returns the filename of the page the user is currently in
+/*****************************************************/
 function HTML_checkPage() {
     var page = window.location.pathname.split("/").pop()
     return page;
 }
+
 /*****************************************************/
 // HTML_updateHTMLFromPerms();
 // called by firebase.js in fb_processAuthRole();
@@ -140,9 +153,10 @@ function HTML_enterGame(chosenGame) {
 }
 
 /*****************************************************/
-// HTML_returnPage();
-// called when user presses return button (in gamePage)
-// shows landing page and hides gamepage
+// HTML_returnLobby();
+//called when the gtn game ends
+//makes the game section gone and shows the build lobby table
+//makes p1 and p2 stats back to waiting for player
 /*****************************************************/
 function HTML_returnLobby() {
     document.getElementById("gtn_game").style.display = "none";
@@ -151,7 +165,14 @@ function HTML_returnLobby() {
     document.getElementById("p2_stats").innerHTML = "WAITING FOR PLAYER 2";
 }
 
-
+/*****************************************************/
+//HTML_loadMultiGame(_p2data)
+//called when player two joins the lobby or when client joins a lobby
+//p2data is just the opponents data
+//creates lists with the clients gtn stats and the opponents gtn stats and shows them
+//shows info like what player you are and who's turn it is
+//generates a random number from 0 to 100
+/*****************************************************/
 function HTML_loadMultiGame(_p2data) {
     document.getElementById("s_table").style.display = "none";
     document.getElementById("gtn_game").style.display = "block";
@@ -175,9 +196,11 @@ function HTML_loadMultiGame(_p2data) {
     document.getElementById(`p${_p2data.player}_stats`).innerHTML = opponentStats;
     document.getElementById("gtn_player").innerHTML = `you are player ${player.player}`;
     document.getElementById("gp_opponentGuess").innerHTML = "WAITING FOR GUESS";
+
     let onlineGame = JSON.parse(sessionStorage.getItem("currentGameData"));
     if (onlineGame.turn == `p${player.player}`) {
         document.getElementById("gp_gtnInfo").innerHTML = "turn: your turn";
+        fb_onDisconnectOff(LOBBY, player.UID, "p1dc");
     } else {
         document.getElementById("gp_gtnInfo").innerHTML = "turn: opponent's turn";
     }
@@ -185,18 +208,34 @@ function HTML_loadMultiGame(_p2data) {
     fb_onDisconnect(onlineLobby, "onlineGame", `p${player.player}`);
 }
 
-
+/*****************************************************/
+//HTML_checkDisconnected()
+//called when the gtnpage is loaded
+//if onlineGame exists in sessionstorage then player WAS in a game
+//adds a loss to the player and removes p2, lobby, and ingame data from session storage
+//makes onlineGame null and alerts the user of their punishment
+//if the user created a lobby, no one joined, and the user disconnected then
+//user will be alerted about their disconnection, lobby removed, and sessionstorage data removed for the lobby
+/*****************************************************/
 function HTML_checkDisconnected() {
     let onlineGame = JSON.parse(sessionStorage.getItem("currentGameData"));
+    let inGame = (sessionStorage.getItem("inGame") === 'true')
 
-    if (onlineGame) {
+    if (onlineGame && inGame == true) {
         console.log("reconnected")
         let loss = userGameData.GTN_Losses += 1
         fb_updateRec(GAMEPATH, userDetails.uid, {GTN_Losses: loss})
 
+        sessionStorage.removeItem("inGame")
         sessionStorage.removeItem("playerTwoData")
-        sessionStorage.removeItem("onlineGame")
+        sessionStorage.removeItem("currentGameData")
         onlineGame = null;
+        alert("you disconnected from last game, you lost the game as a punishment")
+    } else if (onlineGame && inGame == false){
+        alert("you disconnected, your lobby has been removed. please make another one.")
+        sessionStorage.removeItem("inGame")
+        sessionStorage.removeItem("playerTwoData")
+        sessionStorage.removeItem("currentGameData")
     }
 }
 
@@ -214,7 +253,12 @@ function HTML_checkDisconnected() {
         //     HTML_loadMultiGame();
         // }
 
-
+/*****************************************************/
+//HTML_checkLogin()
+//checks if the user has logged in
+//session storage will have data if the user has logged in
+//returns either true or false if session storage has data that exists for user
+/*****************************************************/
 function HTML_checkLogin() {
     if (sessionStorage.getItem("userDetails") && sessionStorage.getItem("userGameData")) {
         return true
@@ -223,13 +267,23 @@ function HTML_checkLogin() {
     }
 }
 
+/*****************************************************/
+//HTML_logout()
+//called when user clicks logout button in index.html
+//logs the user out, automatically logs the user in and clears sessionstorage
+/*****************************************************/
 function HTML_logout() {
     fb_logout();
     fb_login(userDetails, permissions);
     sessionStorage.clear();
 }
 
-
+/*****************************************************/
+//HTML_lbdisplay(game)
+//makes leaderboard variable an empty array
+//reads all game data and sorts the data depending on what parameter 'game' equals to
+//sorts the data by either highest to lowest or lowest to highest depdending on what 'game' is
+/*****************************************************/
 function HTML_lbDisplay(game) {
     leaderboard = []
     switch(game) {

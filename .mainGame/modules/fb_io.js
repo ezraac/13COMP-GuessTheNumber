@@ -51,7 +51,6 @@ function fb_login(_dataRec, permissions) {
 
 
             fb_readRec(DBPATH, _dataRec.uid, userDetails, fb_processUserDetails); //reads user details
-            fb_readOn(DBPATH, _dataRec.uid, userDetails, fb_processReadOn)
             fb_readRec(AUTHPATH, _dataRec.uid, permissions, fb_processAuthRole); //reads user auth role
             console.log(permissions)
             loginStatus = 'logged in';
@@ -292,10 +291,10 @@ function fb_processPlayerCreateLobby() {
 }
 
 /*
-fb_processAll(_dbData, _data, dbKeys)
-processes all data
-iterates through dbkeys and adds data in _data
-data is a whole persons data depending on path read
+fb_processLobbyAll(_snapshot, _dbData, _result, _data, dbkeys)
+called in fb_readAll from html_getData in lobby_builder
+process all of the data in 'activeLobbies' path
+adds to _data and calls html_buildTableFunc to build the table for the user
 */
 function fb_processLobbyAll(_snapshot, _dbData, _result, _data, dbKeys) {
     if (_result == "ok") {
@@ -305,21 +304,27 @@ function fb_processLobbyAll(_snapshot, _dbData, _result, _data, dbKeys) {
             _data = [];
     
             console.log(user, key)
-            
-            _data.push({
-                gameName: user[0].gameName,
-                GTN_Wins: user[0].GTN_Wins,
-                GTN_Losses: user[0].GTN_Losses,
-                GTN_Draws: user[0].GTN_Draws,
-                UID: user[0].UID,
-            })
-    
-            html_buildTableFunc("tb_userDetails", _data)
+            if (user[1].turn) {
+                break;
+            } else {
+                _data.push({
+                    gameName: user[0].gameName,
+                    GTN_Wins: user[0].GTN_Wins,
+                    GTN_Losses: user[0].GTN_Losses,
+                    GTN_Draws: user[0].GTN_Draws,
+                    UID: user[0].UID,
+                })
+            }
         }
+        html_buildTableFunc("tb_userDetails", _data)
     }
 }
 
-
+/*****************************************************/
+//fb_processGameAll(snapshot, _dbData, _result, _data, dbKeys, _sort)
+//called in fb_readAll from HTML_lbDisplay
+//process all the game data needed for leaderboard and calls HTML_sortLeaderboard to sort the data into a leaderboard
+/*****************************************************/
 function fb_processGameAll(_snapshot, _dbData, _result, _data, dbKeys, _sort) {
     if (_result == "ok") {
         console.log(dbKeys)
@@ -337,6 +342,12 @@ function fb_processGameAll(_snapshot, _dbData, _result, _data, dbKeys, _sort) {
     }
 }
 
+/*****************************************************/
+//fb_processReadOn(_dbData, _data, _path)
+//called from fb_readOn
+//not much here, with my code right now, only db_lobbyOnReadSort gets called
+//can add more for other things like another multiplayer game
+/*****************************************************/
 function fb_processReadOn(_dbData, _data, _path) {
     //console.log("processing data")
     //console.log(_dbData)
@@ -364,6 +375,13 @@ function fb_processReadOn(_dbData, _data, _path) {
     }
 }
 
+/*****************************************************/
+//fb_readOn(_path, _key, _data, _processData)
+//called in gtn
+//default firebase function
+//sets a callback when data in the reference in the database gets updated
+//calls _processData to process the data
+/*****************************************************/
 function fb_readOn(_path, _key, _data, _processData) {
     console.log('fb_readOn: path= ' + _path + '  key= ' + _key);
 
@@ -389,13 +407,25 @@ function fb_readOn(_path, _key, _data, _processData) {
     }
 }
 
+/*****************************************************/
+//fb_readOff(_path, _key)
+//default firebase function
+//called to turn off a readOn in firebase
+//turns off the readOn for the lobby
+/*****************************************************/
 function fb_readOff(_path, _key) {
     console.log("fb_readOff for " + _key)
 
     firebase.database().ref(`${_path}/${_key}`).off()
 }
 
-
+/*****************************************************/
+//fb_updateRec(_path, _key, _data)
+//default firebase function
+//called to update a specific record in the database
+//update and write has a difference
+//update will not delete the other data in the same path
+/*****************************************************/
 function fb_updateRec(_path, _key, _data) {
     writeStatus = "waiting";
     firebase.database().ref(_path + "/" + _key).update(_data, function (error) {
@@ -411,21 +441,45 @@ function fb_updateRec(_path, _key, _data) {
     console.log("fb_updaterec exit")
 }
 
-
+/*****************************************************/
+//fb_onDisconnect(_path, _key, _player)
+//default firebase function
+//will set the referenced to specified data in parameters when the player disconnects
+/*****************************************************/
 function fb_onDisconnect(_path, _key, _player) {
-    inGame = (sessionStorage.getItem("inGame") === "true")
-    if (inGame == true) {
-        var ref = firebase.database().ref(`${_path}/${_key}/${_player}_Status`)
-        ref.onDisconnect().set("offline")
+    if (_player == "p1dc") {
+        var ref = firebase.database().ref(`${_path}/${_key}`)
+        ref.onDisconnect().set(null)
+    } else {
+        inGame = (sessionStorage.getItem("inGame") === "true")
+        if (inGame == true) {
+            var ref = firebase.database().ref(`${_path}/${_key}/${_player}_Status`)
+            ref.onDisconnect().set("offline")
+        }
     }
 }
 
+/*****************************************************/
+//fb_onDisconnectOff(_path, _key, _player)
+//default firebase function
+//will turn off the onDisconnect function for the specified record
+/*****************************************************/
 function fb_onDisconnectOff(_path, _key, _player) {
     console.log("ondisconnect off for " + _player)
-    var ref = firebase.database().ref(`${_path}/${_key}/${_player}_Status`)
-    ref.onDisconnect().cancel()
+    if (_player == "p1dc") {
+        var ref = firebase.database().ref(`${_path}/${_key}`)
+        ref.onDisconnect().cancel()
+    } else {
+        var ref = firebase.database().ref(`${_path}/${_key}/${_player}_Status`)
+        ref.onDisconnect().cancel()
+    }
 }
 
+/*****************************************************/
+//fb_logout()
+//default firebase function
+//signs the user out of the google account
+/*****************************************************/
 function fb_logout() {
     firebase.auth().signOut().then(function() {
         console.log("signout")

@@ -1,5 +1,19 @@
+/*****************************************************/
+// gtn.js
+// written by Ezra Term 2 2023
+/*****************************************************/
 var checkWrite = false
 
+/*****************************************************/
+//gtn_guessNum()
+//called when user submits their gtn guess
+//checks if the guess is outside the 0-100 boundary
+//checks if the turn is the players turn
+//checks if the guess is equal to the random number
+//if the number is equal then alert user and call gtn_resetLobby
+//sets checkwrite to tre and turns off readon for the lobby
+//otherwise will update the turn and their guess to firebase
+/*****************************************************/
 function gtn_guessNum() {
     var playerguess = parseInt(document.getElementById("gtn_guess").value);
 
@@ -32,6 +46,15 @@ function gtn_guessNum() {
     }
 }
 
+/*****************************************************/
+//gtn_checkOppGuess(_onlineGame)
+//called from readOn from db_lobbyOnReadSort
+//readon will check if the lobby gets updated data and calls this function
+//checks if the turn is the users turn
+//updates the html to show the opponents guess
+//if the turn is equal to end and neither player has disconnected
+//turns off readon for lobby and calls gtn_resetLobby
+/*****************************************************/
 function gtn_checkOppGuess(_onlineGame) {
     if (_onlineGame.turn == "p1" && clientCreateLobby[0].player == 1) {
         if (_onlineGame.playerTwoGuess) {
@@ -53,7 +76,16 @@ function gtn_checkOppGuess(_onlineGame) {
     }
 }
 
-
+/*****************************************************/
+//gtn_resetLobby(_winner, _loser, _onlineGame)
+//called when: user guesses correctly, or opponent guesses correctly
+//turns off ondisconnect for the lobby
+//if the winner is the user, updates wins for user 
+//if loser is the user, updates losses for user
+//removes the lobby data in sessionstorage
+//sets lobby variables to null or false
+//calls HTML_returnLobby to return to the lobby
+/*****************************************************/
 function gtn_resetLobby(_winner, _loser, _onlineGame) {
     console.log(_winner, _onlineGame)
     fb_onDisconnectOff(onlineLobby, "onlineGame", `p${clientCreateLobby[0].player}`);
@@ -95,10 +127,18 @@ function gtn_resetLobby(_winner, _loser, _onlineGame) {
     HTML_returnLobby();
 }
 
+/*****************************************************/
+//gtn_checkDisconnect(_onlineGame)
+//called in db_lobbyOnReadSort from readOn
+//checks if user is in game
+//checks if p1 or p2 disconnected
+//resets lobby from db and removes session storage variables for lobby
+//returns back to lobby
+/*****************************************************/
 function gtn_checkDisconnect(_onlineGame) {
     console.log("check disconnect: " + _onlineGame.turn)
     if (inGame == true) {
-        if (_onlineGame.p1_Status == "offline" || _onlineGame.p2_Status == "offline") {
+        if (_onlineGame.p1_Status == "offline") {
             if (_onlineGame.p1_Status == "offline") {
                 _onlineGame.turn = "end";
                 _onlineGame.winner = "p2";
@@ -113,6 +153,7 @@ function gtn_checkDisconnect(_onlineGame) {
             sessionStorage.removeItem("currentGameData");
             sessionStorage.removeItem("inGame");
             sessionStorage.removeItem("onlineGame");
+            alert("opponent disconnected")
             HTML_returnLobby();
         }
     }

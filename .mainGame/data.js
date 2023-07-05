@@ -49,17 +49,21 @@ var randomNum;
 /*****************************************************/
 
 /*****************************************************/
-// login()
-// Input event; called when user clicks LOGIN button
-// Logs user into firebase using Google login
-// Input:
-// Return:
+//db_fbSync()
+//called when user clicks sync firebase details button in index.html
+//'logs' the user in and the details get updated to what is in firebase
 /*****************************************************/
 function db_fbSync() {
   fb_login(userDetails, permissions);
-  console.log(permissions);
 }
 
+/*****************************************************/
+//db_login()
+//called in window.location in html_manager.js
+//checks if the user has their details in session storage
+//if no data, logs the user in
+//else sets the userdetails, usergamedata, and client lobby data to the data in session storage
+/*****************************************************/
 function db_login() {
 
   if (HTML_checkLogin() == false) {
@@ -75,6 +79,15 @@ function db_login() {
   }
 }
 
+/*****************************************************/
+//db_lobbyOnReadSort(_dbData)
+//called from readOn in fb_io.js
+//when data is changed inside the clients lobby ONLY, will loop through _dbData and do the following
+//playerTwo uid is the only key that will not equal to user uid or onlineGame
+//saves playerTwoData and client lobby data
+//saves onlinegame and checks if opponent disconnected and checks opponents guess
+//when the for loop saves playertwodata and onlinegame, it will call db_checkStart to start the game
+/*****************************************************/
 function db_lobbyOnReadSort(_dbData) {
   console.log(_dbData)
   var playerData = _dbData
@@ -106,8 +119,13 @@ function db_lobbyOnReadSort(_dbData) {
     }
 }
 
+/*****************************************************/
+//db_checkStart(_p2data, _onlineGame)
+//checks if there are two players in the lobby path, if they are not in game, and if the game hasn't ended
+//if all are true then will update lobby and set inGame to true and load the page
+/*****************************************************/
 function db_checkStart(_p2data, _onlineGame) {
-  console.log("db_checkStart", _p2data, _onlineGame)
+console.log("db_checkStart", _p2data, _onlineGame)
   if (_onlineGame.p1_Status == "online" && _onlineGame.p2_Status == "online" && inGame == false && _onlineGame.turn != "end") {
     console.log("yes", _p2data)
     inGame = true;

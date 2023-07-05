@@ -51,7 +51,9 @@ function html_build() {
 
   onlineLobby = `${LOBBY}/LOBBY: ${userDetails.uid}`;
   sessionStorage.setItem("onlineLobby", onlineLobby);
+  sessionStorage.setItem("inGame", inGame)
   fb_readOn(LOBBY, `LOBBY: ${userDetails.uid}`, lobbyArray, fb_processReadOn);
+  fb_onDisconnect(LOBBY, `LOBBY: ${userDetails.uid}`, "p1dc")
   fb_writeRec(LOBBY, `LOBBY: ${userDetails.uid}`, lobbyData);
 }
 
