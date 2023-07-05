@@ -138,7 +138,7 @@ function fb_readAll(_path, _data, _processAll, _sort) {
             var dbKeys = Object.keys(dbData)
 
             //_processall in parameter
-            _processAll(dbData, readStatus, _data, dbKeys, _sort)
+            _processAll(snapshot, dbData, readStatus, _data, dbKeys, _sort)
         }
     }
 
@@ -211,6 +211,10 @@ function fb_processUserDetails(_dbData, _data) {
         _data.photoURL = _dbData.photoURL
         _data.sex = _dbData.sex
         _data.age = _dbData.age
+        _data.address = _dbData.address
+        _data.city = _dbData.city
+        _data.postcode = _dbData.postcode
+        _data.birthday = _dbData.birthday
 
         sessionStorage.setItem("userDetails", JSON.stringify(userDetails));
         fb_readRec(GAMEPATH, _dbData.uid, userGameData, fb_processGameData); //reads user game data
@@ -293,7 +297,7 @@ processes all data
 iterates through dbkeys and adds data in _data
 data is a whole persons data depending on path read
 */
-function fb_processLobbyAll(_dbData, _result, _data, dbKeys) {
+function fb_processLobbyAll(_snapshot, _dbData, _result, _data, dbKeys) {
     if (_result == "ok") {
         for (i = 0; i < dbKeys.length; i++) {
             let key = dbKeys[i]
@@ -316,7 +320,7 @@ function fb_processLobbyAll(_dbData, _result, _data, dbKeys) {
 }
 
 
-function fb_processGameAll(_dbData, _result, _data, dbKeys, _sort) {
+function fb_processGameAll(_snapshot, _dbData, _result, _data, dbKeys, _sort) {
     if (_result == "ok") {
         console.log(dbKeys)
         for (i = 0; i < dbKeys.length; i++) {
@@ -326,6 +330,7 @@ function fb_processGameAll(_dbData, _result, _data, dbKeys, _sort) {
                 GTN_Wins: _dbData[key].GTN_Wins,
                 TTT_Wins: _dbData[key].TTT_Wins,
                 PTB_timeRec: _dbData[key].PTB_timeRec,
+                PTB_avgScore: _dbData[key].PTB_avgScore,
             })
         }
         HTML_sortLeaderboard(_data, _sort)

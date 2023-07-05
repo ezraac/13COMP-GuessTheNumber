@@ -55,6 +55,10 @@ function reg_regDetailsEntered() {
   userDetails.phone = Number(reg_getFormItemValue("f_reg", 1));      //<=======
   userDetails.sex = reg_getFormItemValue("f_reg", 2);
   userDetails.age = Number(reg_getFormItemValue("f_reg", 3))
+  userDetails.address = reg_getFormItemValue("f_reg", 4)
+  userDetails.city = reg_getFormItemValue("f_reg", 5)
+  userDetails.postcode = reg_getFormItemValue("f_reg", 6)
+  userDetails.birthday = reg_getFormItemValue("f_reg", 7)
 
   console.log("reg_regDetailsEntered: form passed html validation - " +
     document.getElementById('f_reg').checkValidity());

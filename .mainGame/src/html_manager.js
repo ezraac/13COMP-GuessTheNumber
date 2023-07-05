@@ -240,6 +240,10 @@ function HTML_lbDisplay(game) {
         case "ptb":
             fb_readAll(GAMEPATH, leaderboard, fb_processGameAll, "ptb");
             break;
+
+        case "ptb_ahs":
+            fb_readAll(GAMEPATH, leaderboard, fb_processGameAll, "ptb_ahs");
+            break;
         
         case "ttt":
             fb_readAll(GAMEPATH, leaderboard, fb_processGameAll, "ttt");
@@ -257,11 +261,15 @@ function HTML_sortLeaderboard(_leaderboard, _sort) {
             break;
         
         case "ptb":
-            _leaderboard.sort((a, b) => parseInt(b.PTB_timeRec) - parseInt(a.PTB_timeRec));
+            _leaderboard.sort((a, b) => parseInt(a.PTB_timeRec) - parseInt(b.PTB_timeRec));
             break;
         
         case "ttt":
             _leaderboard.sort((a, b) => parseInt(b.TTT_Wins) - parseInt(a.TTT_Wins));
+            break;
+
+        case "ptb_ahs":
+            _leaderboard.sort((a, b) => parseInt(b.PTB_avgScore) - parseInt(a.PTB_avgScore));
             break;
     }
     
@@ -275,14 +283,16 @@ function HTML_sortLeaderboard(_leaderboard, _sort) {
             row += `<td class="w3-center">${_leaderboard[i].GTN_Wins}</td>
             </tr>`
         } else if (_sort == "ptb") {
-            row += `<td class="w3-center">${_leaderboard[i].PTB_timeRec}</td>
+            row += `<td class="w3-center">${_leaderboard[i].PTB_timeRec}s</td>
             </tr>`
         } else if (_sort == "ttt") {
             row += `<td class="w3-center">${_leaderboard[i].TTT_Wins}</td>
+            </tr>` 
+        } else if (_sort == "ptb_ahs") {
+            row += `<td class="w3-center">${_leaderboard[i].PTB_avgScore}</td>
             </tr>` 
         }
 
         document.getElementById("lb_leaderboard").innerHTML += row
     }
-    
 }

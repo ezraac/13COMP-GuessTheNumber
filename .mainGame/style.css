@@ -25,11 +25,6 @@ canvas {
   height: 100vh;
 }
 
-#gamePage {
-  display: none;
-  height: 100vh;
-}
-
 #helloHeader {
   height: 15vh;
 }
@@ -86,6 +81,34 @@ canvas {
   top:50%;
 
   transform: translate(-50%,-50%);
+}
+
+#game_textDiv {
+  background-color: rgb(92, 92, 92);
+  border-radius: 20px;
+  font-size: larger;
+  width: 30vw;
+  height: 65vh;
+}
+
+#game_timeDiv {
+  background-color: rgb(24, 230, 72);
+  border-radius: 20px;
+  width: 10vw;
+}
+
+#game_startButton {
+  margin-top: 20px;
+  background-color: rgb(24, 230, 72);
+  color: white;
+  border-radius: 20px;
+}
+
+#game_returnButton {
+  margin-top: 20px;
+  background-color: rgb(24, 230, 72);
+  color: white;
+  border-radius: 20px;
 }
 /*------------------------------------------------------------*
     REGISTRATION page styling

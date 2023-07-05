@@ -101,7 +101,7 @@ function ad_Game() {
 //         NOTE: this is the raw data, EG snapshot, NOT snapshot.val()
 // Return:
 /**************************************************************/
-function ad_processUSERReadAll(_dbRec, _result) {
+function ad_processUSERReadAll(_dbRec, _dbData, _result) {
   console.log(Object.values(_dbRec))
 
   var childKey;
@@ -123,11 +123,11 @@ function ad_processUSERReadAll(_dbRec, _result) {
         phone: childData.phone,
         age: childData.age,
         sex: childData.sex,
-        //   addrNum:      childData.addrNum,
-        //   addrSt:       childData.addrSt,
-        //   addrSuburb:   childData.addrSuburb,
+        address: childData.address,
+        city:       childData.city,
+        postcode:   childData.postcode,
         //   addrCity:     childData.addrCity,
-        //   addrPostCode: childData.addrPostCode,
+        birthday: childData.birthday,
         uid: childKey
       });
     });
@@ -140,7 +140,7 @@ function ad_processUSERReadAll(_dbRec, _result) {
     //  7 = COLUMMN NUMBER WHICH CONTAINS THE DATABASE KEY.              //<=======
     //  8 = DATABASE PATH THE RECORDS WERE READ FROM.                    //<=======
     ad_displayAll("t_userData", ad_adminArray, true,
-      "landingPage", "gamePage", "s_adminPage", 6, DBPATH);        //<=======
+      "landingPage", "gamePage", "s_adminPage", 10, DBPATH);        //<=======
   }
 }
 
@@ -152,7 +152,7 @@ function ad_processUSERReadAll(_dbRec, _result) {
 //         NOTE: this is the raw data, EG snapshot, NOT snapshot.val()
 // Return:
 /**************************************************************/
-function ad_processGameReadAll(_dbRec, _result) {
+function ad_processGameReadAll(_dbRec, _dbData, _result) {
   console.log('ad_processBBReadAll: ', 'result = ' + _result);
 
   var childKey;

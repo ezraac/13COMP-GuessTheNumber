@@ -18,7 +18,6 @@ function setup() {
 	cnv = createCanvas(element.offsetWidth, element.offsetHeight); //sets width and height to same as div
 	cnv.parent("game_canvasDiv");
 	whatGame = sessionStorage.getItem("chosenGame");
-	game_gameStart()
 }
 
 /*
@@ -28,8 +27,16 @@ any code inside it will be automatically executed continuously
 amount of "draws" per second controlled by frame rate (defaulted to 60). to be left alone.
 */
 function draw() {
-	if (whatGame == "GTN") {
-		background(255);
+	if (whatGame == "PTB") {
+		background(0);
+        document.getElementById("gameTimer").innerHTML = `Time: ${PTB_time}.${PTB_ms}s`; //timer text
+		document.getElementById("misses").innerHTML = "Misses: " + PTB_misses;
+        for (var i = 0; i < ballarray.length; i++) {
+			//ball functions
+            ballarray[i].display();
+            ballarray[i].move();
+            ballarray[i].bounce();
+        }
 	} else if (whatGame == "TTT") {
 		let element = document.getElementById("game_canvasDiv")
 		background(0)
@@ -44,7 +51,32 @@ function for the start button
 changes button function when clicked
 */
 function game_gameStart() {
-
+	if (started == false) {
+		game_resetVars();
+		if (buttonfunc == "start") {
+            if (whatGame == "PTB") {
+                document.getElementById("game_startButton").style.backgroundColor = "red";
+                document.getElementById("game_startButton").innerHTML = "STOP"; //changes button to stop button
+                buttonfunc = "stop";
+				cnv.mousePressed(PTB_MouseFunc) //mouse pressed over canvas func
+                PTB_balls() //creates balls called in popball.js
+                pBInterval = setInterval(game_nextMs, 100); //starts timer
+				document.getElementById("hitscore").innerHTML = "Average Hit Score: 0"
+            }
+		}
+	} else {
+		started = false
+		if (buttonfunc == "stop") {
+            if (whatGame == "PTB") {
+				document.getElementById("game_startButton").style.backgroundColor = "rgb(24, 230, 72)";
+				document.getElementById("game_startButton").innerHTML = "START"; //changes button to start button
+				buttonfunc = "start";
+                ballarray.splice(0, ballarray.length); //removes all balls in object
+                started = false;
+                clearInterval(pBInterval); //stop timer
+            }
+		}
+	}
 }
 
 //next second - called by interval
