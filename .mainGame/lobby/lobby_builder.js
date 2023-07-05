@@ -51,6 +51,7 @@ function html_build() {
 
   onlineLobby = `${LOBBY}/LOBBY: ${userDetails.uid}`;
   sessionStorage.setItem("onlineLobby", onlineLobby);
+  fb_readOn(LOBBY, `LOBBY: ${userDetails.uid}`, lobbyArray, fb_processReadOn);
   fb_writeRec(LOBBY, `LOBBY: ${userDetails.uid}`, lobbyData);
 }
 
@@ -142,12 +143,11 @@ function html_buildTableFunc(_tableBodyID, _array) {
 
         onlineLobby = `${LOBBY}/LOBBY: ${col4}`
         sessionStorage.setItem("onlineLobby", onlineLobby);
-        inGame = true;
-        sessionStorage.setItem("inGame", inGame);
 
+        fb_readOn(LOBBY, `LOBBY: ${col4}`, lobbyArray, fb_processReadOn);
         fb_updateRec(onlineLobby, "onlineGame", {p2_uid: userDetails.uid, p2_Status: "online", turn: "p1"});
         fb_writeRec(onlineLobby, userDetails.uid, clientCreateLobby[0]);
-        HTML_loadMultiGame(); //switch section from lobby to gtn
+        //HTML_loadMultiGame(); //switch section from lobby to gtn
       }
     });
   });

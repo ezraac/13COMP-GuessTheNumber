@@ -11,7 +11,7 @@ window.onload = function () {
     }
 
     if (HTML_checkPage() == "gamePage.html") {
-        fb_readOn(LOBBY, null, lobbyArray, fb_processReadOn);
+        fb_readRec(GAMEPATH, userDetails.uid, userGameData, fb_processGameData)
         HTML_checkDisconnected();
     }
 
@@ -28,6 +28,10 @@ window.onload = function () {
 
     if (HTML_checkPage == "adminPage.html") {
         ad_user();
+    }
+
+    if (HTML_checkPage() == "leaderboard.html") {
+
     }
 }
 
@@ -138,7 +142,7 @@ function HTML_returnLobby() {
 }
 
 
-function HTML_loadMultiGame() {
+function HTML_loadMultiGame(_p2data) {
     document.getElementById("s_table").style.display = "none";
     document.getElementById("gtn_game").style.display = "block";
     var player = clientCreateLobby[0]
@@ -151,14 +155,14 @@ function HTML_loadMultiGame() {
     `
 
     var opponentStats = `
-    <li>Username: ${playerTwoDetails.gameName}</li>
-    <li>Wins: ${playerTwoDetails.GTN_Wins}</li>
-    <li>Draws: ${playerTwoDetails.GTN_Draws}</li>
-    <li>Losses: ${playerTwoDetails.GTN_Losses}</li>
+    <li>Username: ${_p2data.gameName}</li>
+    <li>Wins: ${_p2data.GTN_Wins}</li>
+    <li>Draws: ${_p2data.GTN_Draws}</li>
+    <li>Losses: ${_p2data.GTN_Losses}</li>
     `
 
     document.getElementById(`p${player.player}_stats`).innerHTML = stats;
-    document.getElementById(`p${playerTwoDetails.player}_stats`).innerHTML = opponentStats;
+    document.getElementById(`p${_p2data.player}_stats`).innerHTML = opponentStats;
     document.getElementById("gtn_player").innerHTML = `you are player ${player.player}`;
     document.getElementById("gp_opponentGuess").innerHTML = "WAITING FOR GUESS";
     let onlineGame = JSON.parse(sessionStorage.getItem("currentGameData"));
@@ -176,21 +180,27 @@ function HTML_checkDisconnected() {
     let onlineGame = JSON.parse(sessionStorage.getItem("currentGameData"));
 
     if (onlineGame) {
-        if (onlineGame.turn != "end") {
-            console.log("reconnected")
-            playerTwoDetails = JSON.parse(sessionStorage.getItem("playerTwoData"));
-            clientCreateLobby[0] = JSON.parse(sessionStorage.getItem("clientData"));
-            onlineLobby = sessionStorage.getItem("onlineLobby");
+        console.log("reconnected")
 
-            if (clientCreateLobby[0].player == 1) {
-                fb_updateRec(onlineLobby, "onlineGame", { p1_Status: "online" })
-            } else {
-                fb_updateRec(onlineLobby, "onlineGame", { p2_Status: "online" })
-            }
-            HTML_loadMultiGame();
-        }
+        sessionStorage.removeItem("playerTwoData")
+        sessionStorage.removeItem("onlineGame")
+        onlineGame = null;
     }
 }
+
+ // if (onlineGame.turn != "end") {
+        //     console.log("reconnected")
+        //     playerTwoDetails = JSON.parse(sessionStorage.getItem("playerTwoData"));
+        //     clientCreateLobby[0] = JSON.parse(sessionStorage.getItem("clientData"));
+        //     onlineLobby = sessionStorage.getItem("onlineLobby");
+
+        //     if (clientCreateLobby[0].player == 1) {
+        //         fb_updateRec(onlineLobby, "onlineGame", { p1_Status: "online" })
+        //     } else {
+        //         fb_updateRec(onlineLobby, "onlineGame", { p2_Status: "online" })
+        //     }
+        //     HTML_loadMultiGame();
+        // }
 
 
 function HTML_checkLogin() {
@@ -205,4 +215,62 @@ function HTML_logout() {
     fb_logout();
     fb_login(userDetails, permissions);
     sessionStorage.clear();
+}
+
+
+function HTML_lbDisplay(game) {
+    leaderboard = []
+    switch(game) {
+        case "gtn":
+            fb_readAll(GAMEPATH, leaderboard, fb_processGameAll, "gtn");
+            break;
+        
+        case "ptb":
+            fb_readAll(GAMEPATH, leaderboard, fb_processGameAll, "ptb");
+            break;
+        
+        case "ttt":
+            fb_readAll(GAMEPATH, leaderboard, fb_processGameAll, "ttt");
+            break;
+    }
+}
+
+function HTML_sortLeaderboard(_leaderboard, _sort) {
+    console.log("html sort leaderboard", _leaderboard, _sort)
+    document.getElementById("lb_leaderboard").innerHTML = null;
+
+    switch (_sort) {
+        case "gtn":
+            _leaderboard.sort((a, b) => parseInt(b.GTN_Wins) - parseInt(a.GTN_Wins));
+            break;
+        
+        case "ptb":
+            _leaderboard.sort((a, b) => parseInt(b.PTB_timeRec) - parseInt(a.PTB_timeRec));
+            break;
+        
+        case "ttt":
+            _leaderboard.sort((a, b) => parseInt(b.TTT_Wins) - parseInt(a.TTT_Wins));
+            break;
+    }
+    
+
+    for (let i = 0; i < _leaderboard.length; i++) {
+        let row = `<tr>
+        <td>${i+1}</td>
+        <td>${_leaderboard[i].gameName}</td>`
+
+        if (_sort == "gtn") {
+            row += `<td class="w3-center">${_leaderboard[i].GTN_Wins}</td>
+            </tr>`
+        } else if (_sort == "ptb") {
+            row += `<td class="w3-center">${_leaderboard[i].PTB_timeRec}</td>
+            </tr>`
+        } else if (_sort == "ttt") {
+            row += `<td class="w3-center">${_leaderboard[i].TTT_Wins}</td>
+            </tr>` 
+        }
+
+        document.getElementById("lb_leaderboard").innerHTML += row
+    }
+    
 }

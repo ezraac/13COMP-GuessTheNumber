@@ -121,7 +121,7 @@ function fb_writeRec(_path, _key, _data, _location) {
 // Input:  path to read from and where to save it
 // Return:
 /*****************************************************/
-function fb_readAll(_path, _data, _processAll) {
+function fb_readAll(_path, _data, _processAll, _sort) {
     console.log('fb_readAll: path= ' + _path);
 
     readStatus = "waiting"
@@ -138,18 +138,14 @@ function fb_readAll(_path, _data, _processAll) {
             var dbKeys = Object.keys(dbData)
 
             //_processall in parameter
-            if (_path == DBPATH || _path == GAMEPATH) {
-                _processAll(snapshot, readStatus)
-            } else {
-                _processAll(dbData, readStatus, _data, dbKeys)
-            }
+            _processAll(dbData, readStatus, _data, dbKeys, _sort)
         }
     }
 
     function readErr(error) {
         readData = "fail"
         console.log(error)
-        _processAll(_data, dbData, dbKeys)
+        _processAll(_data, readStatus, dbData, dbKeys)
     }
 }
 
@@ -177,7 +173,7 @@ function fb_readRec(_path, _key, _data, _processData, _readExtraVar) {
         else {
             readStatus = "ok"
             if (_path == GAMEPATH) {
-                _processData(dbData, _data, _readExtraVar);
+                _processData(dbData, _data);
                 // } else if (_path == LOBBY) {
                 // _processData(dbData, _data);
             } else {
@@ -209,15 +205,15 @@ function fb_processUserDetails(_dbData, _data) {
         sessionStorage.setItem("userDetails", JSON.stringify(userDetails));
         window.location.replace("pages/regPage.html");
     } else {
-        userDetails.uid = _dbData.uid
-        userDetails.name = _dbData.name
-        userDetails.email = _dbData.email
-        userDetails.photoURL = _dbData.photoURL
-        userDetails.sex = _dbData.sex
-        userDetails.age = _dbData.age
+        _data.uid = _dbData.uid
+        _data.name = _dbData.name
+        _data.email = _dbData.email
+        _data.photoURL = _dbData.photoURL
+        _data.sex = _dbData.sex
+        _data.age = _dbData.age
 
         sessionStorage.setItem("userDetails", JSON.stringify(userDetails));
-        fb_readRec(GAMEPATH, _dbData.uid, userDetails, fb_processGameData, "all"); //reads user game data
+        fb_readRec(GAMEPATH, _dbData.uid, userGameData, fb_processGameData); //reads user game data
     }
 }
 
@@ -250,23 +246,21 @@ if userdetails exists then game data has to exist
 puts data in userGameData variable (data.js)
 calls function to load page
 */
-function fb_processGameData(_dbData, _data, _game) {
-    if (_game == "all") {
-        userGameData.gameName = _dbData.gameName
-        userGameData.PTB_timeRec = _dbData.PTB_timeRec
-        userGameData.PTB_avgScore = _dbData.PTB_avgScore
-        userGameData.TTT_Wins = _dbData.TTT_Wins
-        userGameData.TTT_Losses = _dbData.TTT_Losses
-        userGameData.GTN_Wins = _dbData.GTN_Wins
-        userGameData.GTN_Losses = _dbData.GTN_Losses
-        userGameData.GTN_Draws = _dbData.GTN_Draws
+function fb_processGameData(_dbData, _data) {
+    _data.gameName = _dbData.gameName
+    _data.PTB_timeRec = _dbData.PTB_timeRec
+    _data.PTB_avgScore = _dbData.PTB_avgScore
+    _data.TTT_Wins = _dbData.TTT_Wins
+    _data.TTT_Losses = _dbData.TTT_Losses
+    _data.GTN_Wins = _dbData.GTN_Wins
+    _data.GTN_Losses = _dbData.GTN_Losses
+    _data.GTN_Draws = _dbData.GTN_Draws
 
-        sessionStorage.setItem("userGameData", JSON.stringify(userGameData));
-    }
+    sessionStorage.setItem("userGameData", JSON.stringify(userGameData));
+    fb_processPlayerCreateLobby();
 
     if (HTML_checkPage() == "index.html") {
         HTML_loadPage();
-        fb_processPlayerCreateLobby();
     }
 }
 
@@ -287,7 +281,6 @@ function fb_processPlayerCreateLobby() {
             GTN_Losses: userGameData.GTN_Losses,
             GTN_Draws: userGameData.GTN_Draws,
             UID: userDetails.uid,
-            player: 1,
         }
     ]
 
@@ -305,6 +298,7 @@ function fb_processLobbyAll(_dbData, _result, _data, dbKeys) {
         for (i = 0; i < dbKeys.length; i++) {
             let key = dbKeys[i]
             let user = Object.values(_dbData[key])
+            _data = [];
     
             console.log(user, key)
             
@@ -321,13 +315,20 @@ function fb_processLobbyAll(_dbData, _result, _data, dbKeys) {
     }
 }
 
-function fb_processGameAll(_dbData, _data, dbKeys) {
-    for (i = 0; i < dbKeys.length; i++) {
-        let key = dbKeys[i]
-        _data.push({
-            gameName: _dbData[key].gameName,
 
-        })
+function fb_processGameAll(_dbData, _result, _data, dbKeys, _sort) {
+    if (_result == "ok") {
+        console.log(dbKeys)
+        for (i = 0; i < dbKeys.length; i++) {
+            let key = dbKeys[i]
+            _data.push({
+                gameName: _dbData[key].gameName,
+                GTN_Wins: _dbData[key].GTN_Wins,
+                TTT_Wins: _dbData[key].TTT_Wins,
+                PTB_timeRec: _dbData[key].PTB_timeRec,
+            })
+        }
+        HTML_sortLeaderboard(_data, _sort)
     }
 }
 
@@ -343,15 +344,14 @@ function fb_processReadOn(_dbData, _data, _path) {
     } else {
 
         if (_path == LOBBY) {
-            console.log(_dbData);
             db_lobbyOnReadSort(_dbData)
         } else {
-            userDetails.uid = _dbData.uid
-            userDetails.name = _dbData.name
-            userDetails.email = _dbData.email
-            userDetails.photoURL = _dbData.photoURL
-            userDetails.sex = _dbData.sex
-            userDetails.age = _dbData.age
+            _data.uid = _dbData.uid
+            _data.name = _dbData.name
+            _data.email = _dbData.email
+            _data.photoURL = _dbData.photoURL
+            _data.sex = _dbData.sex
+            _data.age = _dbData.age
         }
 
 
@@ -360,15 +360,10 @@ function fb_processReadOn(_dbData, _data, _path) {
 }
 
 function fb_readOn(_path, _key, _data, _processData) {
-    //console.log('fb_readRec: path= ' + _path + '  key= ' + _key);
+    console.log('fb_readOn: path= ' + _path + '  key= ' + _key);
 
     readStatus = "waiting"
-    if (_path == LOBBY) {
-        firebase.database().ref(`${_path}`).on("value", gotRecord, readErr);
-    } else if (_path == DBPATH) {
-        firebase.database().ref(`${_path}/${_key}`).on("value", gotRecord, readErr);
-    }
-
+    firebase.database().ref(`${_path}/${_key}`).on("value", gotRecord, readErr);
 
     function gotRecord(snapshot) {
         let dbData = snapshot.val()
@@ -389,6 +384,12 @@ function fb_readOn(_path, _key, _data, _processData) {
     }
 }
 
+function fb_readOff(_path, _key) {
+    console.log("fb_readOff for " + _key)
+
+    firebase.database().ref(`${_path}/${_key}`).off()
+}
+
 
 function fb_updateRec(_path, _key, _data) {
     writeStatus = "waiting";
@@ -407,8 +408,8 @@ function fb_updateRec(_path, _key, _data) {
 
 
 function fb_onDisconnect(_path, _key, _player) {
-    inGame = sessionStorage.getItem("inGame")
-    if (inGame == 'true') {
+    inGame = (sessionStorage.getItem("inGame") === "true")
+    if (inGame == true) {
         var ref = firebase.database().ref(`${_path}/${_key}/${_player}_Status`)
         ref.onDisconnect().set("offline")
     }

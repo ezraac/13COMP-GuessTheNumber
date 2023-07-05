@@ -3,8 +3,8 @@ var checkWrite = false
 function gtn_guessNum() {
     var playerguess = parseInt(document.getElementById("gtn_guess").value);
 
-    if (playerguess > 100 || playerguess < 1) {
-        alert("please enter a number between 1 and 100")
+    if (playerguess > 100 || playerguess < 0) {
+        alert("please enter a number between 0 and 100")
     } else {
         if (gameStats.turn == `p${clientCreateLobby[0].player}`) {
             if (playerguess != randomNum) {
@@ -16,15 +16,17 @@ function gtn_guessNum() {
                 }
             } else {
                 checkWrite = true;
+                fb_readOff(LOBBY, `LOBBY: ${gameStats.p1_uid}`);
+                gameStats.turn = "end";
                 if (clientCreateLobby[0].player == 1) {
                     fb_updateRec(onlineLobby, "onlineGame", {playerOneGuess: playerguess, turn: "end", winner: "p1"});
-                    gtn_resetLobby(clientCreateLobby[0], playerTwoDetails, gameStats);
                     alert("you guessed the correct number!");
                 } else if (clientCreateLobby[0].player == 2) {
                     fb_updateRec(onlineLobby, "onlineGame", {playerTwoGuess: playerguess, turn: "end", winner: "p2"});
-                    gtn_resetLobby(playerTwoDetails, clientCreateLobby[0], gameStats);
                     alert("you guessed the correct number!");
                 }
+
+                gtn_resetLobby(clientCreateLobby[0], playerTwoDetails, gameStats);
             }
         }
     }
@@ -45,60 +47,39 @@ function gtn_checkOppGuess(_onlineGame) {
 
     if (_onlineGame.turn == "end") {
         if (checkWrite == false) {
-            if (clientCreateLobby[0].player == 1) {
-                gtn_resetLobby(clientCreateLobby[0], playerTwoDetails, _onlineGame);
-            } else {
-                gtn_resetLobby(playerTwoDetails, clientCreateLobby[0],  _onlineGame);
-            }
+            fb_readOff(LOBBY, `LOBBY: ${_onlineGame.p1_uid}`)
+            gtn_resetLobby(playerTwoDetails, clientCreateLobby[0], _onlineGame)
         }
     }
 }
 
 
-function gtn_resetLobby(_playerOne, _playerTwo, _onlineGame) {
+function gtn_resetLobby(_winner, _loser, _onlineGame) {
+    console.log(_winner, _onlineGame)
+    fb_onDisconnectOff(onlineLobby, "onlineGame", `p${clientCreateLobby[0].player}`);
 
-    fb_writeRec(LOBBY, `LOBBY: ${_playerOne.UID}`, null);
-
-    if (clientCreateLobby[0].player == 1) {
+    if (_winner.UID == clientCreateLobby[0].UID) {
         if (_onlineGame.turn == "end") {
-            if (_onlineGame.winner == "p1") {
-                let wins = _playerOne.GTN_Wins += 1
-                console.log(wins)
-                fb_updateRec(GAMEPATH, _playerOne.UID, {GTN_Wins: wins})
-    
-                let loss = _playerTwo.GTN_Losses += 1
-                fb_updateRec(GAMEPATH, _playerTwo.UID, {GTN_Losses: loss})
-            } else if (_onlineGame.winner == "p2") {
-                let wins = _playerTwo.GTN_Wins += 1
-                console.log(wins)
-                fb_updateRec(GAMEPATH, _playerTwo.UID, {GTN_Wins: wins})
-    
-                let loss = _playerOne.GTN_Losses += 1
-                fb_updateRec(GAMEPATH, _playerOne.UID, {GTN_Losses: loss})
-                alert("opponent guessed their random number");
-            }
-    
-            fb_onDisconnectOff(onlineLobby, "onlineGame", "p1")
-            delete _playerOne.p2_Status;
-            if (document.getElementById(`${_playerOne.UID}`)) {
-                document.getElementById(`${_playerOne.UID}`).remove();
-            }
-        }
-    
-    } else {
-        fb_onDisconnectOff(onlineLobby, "onlineGame", "p2")
-        if (_onlineGame.winner == "p1") {
-            console.log("winner = p1");
-            userGameData.GTN_Losses += 1;
-            clientCreateLobby[0].GTN_Losses = userGameData.GTN_Losses;
-            alert("opponent guessed their random number");
-        } else if (_onlineGame.winner == "p2") {
-            userGameData.GTN_Wins += 1;
-            clientCreateLobby[0].GTN_Wins = userGameData.GTN_Wins;
+            fb_writeRec(LOBBY, `LOBBY: ${_onlineGame.p1_uid}`, null);
+            let wins = _winner.GTN_Wins += 1
+            console.log(wins)
+            fb_updateRec(GAMEPATH, _winner.UID, {GTN_Wins: wins})
         }
     }
 
-    inGame = false;
+    if (_loser.UID == clientCreateLobby[0].UID) {
+        if (_onlineGame.turn == "end") {
+            let loss = _loser.GTN_Losses += 1
+            fb_updateRec(GAMEPATH, _loser.UID, {GTN_Losses: loss})
+            userGameData.GTN_Losses += 1;
+            clientCreateLobby[0].GTN_Losses = userGameData.GTN_Losses;
+            alert("opponent guessed their random number");
+        }
+    }
+
+    if (document.getElementById(`${_onlineGame.p1_uid}`)) {
+        document.getElementById(`${_onlineGame.p1_uid}`).remove();
+    }
     sessionStorage.setItem("clientData", JSON.stringify(clientCreateLobby[0]));
 
     sessionStorage.removeItem("playerTwoData");
@@ -108,26 +89,31 @@ function gtn_resetLobby(_playerOne, _playerTwo, _onlineGame) {
 
     gameStats = null;
     playerTwoDetails = null;
-
     console.log("removed");
     checkWrite = false;
+    inGame = false;
     HTML_returnLobby();
 }
 
 function gtn_checkDisconnect(_onlineGame) {
-    console.log("check disconnect: " + _onlineGame)
-    if (_onlineGame.p1_Status == "offline" && _onlineGame.p2_Status == "offline") {
-        fb_writeRec(LOBBY, `Lobby: ${_onlineGame.p1_uid}`, null);
-        sessionStorage.removeItem("playerTwoData");
-        sessionStorage.removeItem("currentGameData");
-        sessionStorage.removeItem("inGame");
-        sessionStorage.removeItem("onlineGame");
-        HTML_returnLobby();
+    console.log("check disconnect: " + _onlineGame.turn)
+    if (inGame == true) {
+        if (_onlineGame.p1_Status == "offline" || _onlineGame.p2_Status == "offline") {
+            if (_onlineGame.p1_Status == "offline") {
+                _onlineGame.turn = "end";
+                _onlineGame.winner = "p2";
+                gtn_resetLobby(clientCreateLobby[0], playerTwoDetails, _onlineGame)
+            } else if (_onlineGame.p2_Status == "offline") {
+                _onlineGame.turn = "end";
+                _onlineGame.winner = "p1";
+                gtn_resetLobby(clientCreateLobby[0], playerTwoDetails, _onlineGame)
+            }
+            fb_writeRec(LOBBY, `Lobby: ${_onlineGame.p1_uid}`, null);
+            sessionStorage.removeItem("playerTwoData");
+            sessionStorage.removeItem("currentGameData");
+            sessionStorage.removeItem("inGame");
+            sessionStorage.removeItem("onlineGame");
+            HTML_returnLobby();
+        }
     }
-    if (_onlineGame.p1_Status == "offline" || _onlineGame.p2_Status == "offline") {
-    }
-}
-
-function gtn_disconnectReset() {
-
 }
