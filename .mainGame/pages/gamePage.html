@@ -37,113 +37,39 @@
   <script defer src="../data.js"></script>
   <script defer src="../src/html_manager.js"></script>
   <script defer src="../modules/fb_io.js"></script>
-  <script defer src="../lobby/lobby_builder.js"></script>
-  <script defer src="../modules/ad_manager.js"></script>
   <script defer src="../game_manager.js"></script>
-  <script defer src="../gtn.js"></script>
-
+  <script defer src="../popTheBall.js"></script>
 </head>
-<!--***************************************************
-    //  gamePage
-    ****************************************************-->
-
 <body>
-  <div class="w3-container">
-    <h1 class="w3-wide" style="text-align: center;">guess the number</h1>
-    <div class="w3-container w3-row ">
-      <!--game details for popBall-->
-      <div class="w3-container w3-col l2">
-
-        <ul id="p1_stats" style="list-style-type: none;">WAITING FOR PLAYER 1</ul>
-
-        <button class="w3-button w3-border w3-xlarge" onclick="window.location.replace('../index.html')">RETURN</button>
-      </div>
-
-      <div class="w3-container w3-col l8">
+    <section id="gamePage">
+        <div class="w3-container">
+            <h1 class="w3-wide">Pop the Ball</h1>
+            <div class="w3-container w3-third" id="game_oneThird">
+        <h1 id="hellouser" style="text-align: center;">Hello Tommy</h1>
+        <div class="w3-container w3-third">
+    
+          <!--game details for popBall-->
+          <div class="w3-container" id="game_textDiv">
+            <p id="hitscore">Average Hit Score: 0</p>
+            <p id="highavgscore">Highest AHS: 0</p>
+            <p id="highscore">Fastest Time: 0</p>
+            <p id="misses">Misses: 0</p>
+            <p id="username">Username: Tommy1</p>
+            <div class="w3-container" id="game_timeDiv">
+              <p id=gameTimer>Time: 0s</p>
+            </div>
+    
+            <button class="w3-button w3-border w3-xlarge" onclick="game_gameStart()" id="game_startButton">START</button>
+            <button class="w3-button w3-border w3-xlarge" onclick="HTML_returnPage()" id="game_loginButton">RETURN</button>
+          </div>
+        </div>
+            </div>
+            <div class="w3-container w3-twothird" id="game_twoThird">
+    
         <!--canvas positioned over this div-->
-        <!-- <div id="game_canvasDiv"></div> -->
-
-        <section id="s_table" class="w3-grey">
-          <header>
-            <!--ROW 1 ++++++++++++++++++++++++++++++++++++++-->
-            <div class="w3-row-padding w3-margin-top w3-blue">
-              <div class="w3-col s4 m4 l4">
-                <h1>Build a Lobby</h1>
-              </div>
-
-              <div class="w3-col s8 m8 l8 w3-margin-top">
-
-              </div>
-            </div>
-
-            <!--ROW 2 ++++++++++++++++++++++++++++++++++++++-->
-            <div class="w3-row-padding w3-margin-top">
-              <div class='w3-col s12 m6 l4'>
-                <button id='b_getData' class='b_options 
-                w3-button w3-xlarge w3-border w3-brown' style='width: 100%;' onclick="html_getData()">get
-                  data</button>
-              </div>
-
-              <div class='w3-col s12 m6 l4'>
-                <button class='b_part2
-                w3-button w3-disabled w3-xlarge w3-border w3-brown' style='width: 100%;'
-                  onclick="html_reset()">reset</button>
-              </div>
-              <div class='w3-col s12 m6 l4'>
-                <button class='b_part2
-                w3-button w3-xlarge w3-border w3-brown' style='width: 100%;' onclick="html_build()">build a
-                  lobby</button>
-              </div>
-            </div>
-          </header>
-
-          <main>
-            <table class="w3-table-all w3-border w3-hoverable w3-margin-top">
-              <tr class="w3-light-grey">
-                <th>name</th>
-                <th class="w3-center">wins</th>
-                <th class="w3-center">draws</th>
-                <th class="w3-center">losses</th>
-                <th>uid</th>
-                <th>Join</th>
-              </tr>
-              <tbody id="tb_userDetails">
-              </tbody>
-            </table>
-          </main>
-        </section>
-
-
-
-        <section id="gtn_game" style="display: none;">
-          <div class="w3-half" style="color: #2d2d2d;" id="p1_guess">
-            <label for="gp_gtnGuess">your guess</label>
-            <input type="number" name="gp_gtnGuess" id="gtn_guess">
-            <input type="button" value="guess" onclick="gtn_guessNum()">
-          </div>
-
-          <div class="w3-half" style="color: #2d2d2d;" id="p2_guess">
-            <p id="gtn_player">you are player</p>
-            <p id="gp_gtnInfo"></p>
-            <p>opponent's guess</p>
-            <p id="gp_opponentGuess">WAITING FOR GUESS</p>
-          </div>
-
-          <div class="w3-container">
-            <h1>HOW TO PLAY</h1>
-            <p>you and your opponent both have random numbers generated. 
-              you both will need to guess your randomly generated number. 
-              whoever guesses first wins!</p>
-          </div>
-        </section>
-      </div>
-
-      <div class="w3-container w3-col l2">
-        <ul id="p2_stats" style="list-style-type: none;">WAITING FOR PLAYER 2</ul>
+        <div class="w3-container w3-twothird" id="game_canvasDiv"></div>
       </div>
     </div>
-  </div>
-
+    </section>
 </body>
-
 </html>

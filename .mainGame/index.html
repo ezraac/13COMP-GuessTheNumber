@@ -39,7 +39,6 @@
   <script defer src="src/html_manager.js"></script>
   <script defer src="modules/ad_manager.js"></script>
   <script defer src="modules/fb_io.js"></script>
-  <script defer src="game_manager.js"></script>
 
 </head>
 
@@ -68,8 +67,9 @@
       <h1 class="w3-wide" id="helloHeader">hello</h1>
       <div class="w3-container">
         <!--game enter buttons-->
-        <button class="w3-button w3-border w3-xlarge" onclick="game_enterGame('GTN')">Guess the number</button>
-        <button class="w3-button w3-border w3-xlarge" onclick="game_enterGame('TTT')">Tic Tac Toe</button>
+        <button class="w3-button w3-border w3-xlarge" onclick="HTML_enterGame('GTN')">Guess the number</button>
+        <button class="w3-button w3-border w3-xlarge" onclick="HTML_enterGame('TTT')">Tic Tac Toe</button>
+        <button class="w3-button w3-border w3-xlarge" onclick="HTML_enterGame('PTB')">Pop the ball</button>
         <button class="w3-button w3-border w3-xlarge" onclick="HTML_logout()">Log out</button>
         <button class="w3-button w3-border w3-xlarge" onclick="db_fbSync()">Sync details from Firebase</button>
         <button class="w3-button w3-border w3-xlarge" onclick="window.location.replace('pages/leaderboard.html')">Leaderboard Page</button>

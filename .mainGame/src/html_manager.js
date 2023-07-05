@@ -10,7 +10,7 @@ window.onload = function () {
         db_login();
     }
 
-    if (HTML_checkPage() == "gamePage.html") {
+    if (HTML_checkPage() == "gtnPage.html") {
         fb_readRec(GAMEPATH, userDetails.uid, userGameData, fb_processGameData)
         HTML_checkDisconnected();
     }
@@ -31,8 +31,9 @@ window.onload = function () {
     }
 
     if (HTML_checkPage() == "leaderboard.html") {
-
+        HTML_lbDisplay("gtn");
     }
+
 }
 
 
@@ -129,6 +130,15 @@ function HTML_loadPage() {
     }
 }
 
+function HTML_enterGame(chosenGame) {
+	sessionStorage.setItem("chosenGame", chosenGame);
+	if (chosenGame == "GTN") {
+		window.location.replace('pages/gtnPage.html');
+	} else {
+		window.location.replace('pages/gamePage.html');
+	}
+}
+
 /*****************************************************/
 // HTML_returnPage();
 // called when user presses return button (in gamePage)
@@ -181,6 +191,8 @@ function HTML_checkDisconnected() {
 
     if (onlineGame) {
         console.log("reconnected")
+        let loss = userGameData.GTN_Losses += 1
+        fb_updateRec(GAMEPATH, userDetails.uid, {GTN_Losses: loss})
 
         sessionStorage.removeItem("playerTwoData")
         sessionStorage.removeItem("onlineGame")

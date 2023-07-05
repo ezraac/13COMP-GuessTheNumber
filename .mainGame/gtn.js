@@ -45,7 +45,7 @@ function gtn_checkOppGuess(_onlineGame) {
         }
     }
 
-    if (_onlineGame.turn == "end") {
+    if (_onlineGame.turn == "end" && _onlineGame.p1_Status != "offline" && _onlineGame.p2_Status != "offline") {
         if (checkWrite == false) {
             fb_readOff(LOBBY, `LOBBY: ${_onlineGame.p1_uid}`)
             gtn_resetLobby(playerTwoDetails, clientCreateLobby[0], _onlineGame)
